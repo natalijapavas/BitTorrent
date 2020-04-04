@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d2c03741-b4a7-4aa9-b815-2b3bc216bbfb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="d2c03741-b4a7-4aa9-b815-2b3bc216bbfb" name="Default Changelist" comment="bencode update 2">
+      <change afterPath="$PROJECT_DIR$/src/com/company/Bencoding/Bencode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BCoding/Bencode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BCoding/Bencode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BitTorrentProject/BCoding/Bencode.class" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +20,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="ProjectId" id="1a2Y5cpJ3IRTqDxw0VsOpdtE8YI" />
   <component name="ProjectViewState">
@@ -62,22 +62,41 @@
       <option name="project" value="LOCAL" />
       <updated>1586023646874</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="bencode update 2">
+      <created>1586025593020</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1586025593020</updated>
+    </task>
+    <task id="LOCAL-00003" summary="bencode update 2">
+      <created>1586025775900</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1586025775900</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="bencode update 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="bencode update 1" />
+    <MESSAGE value="bencode update 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="bencode update 2" />
   </component>
   <component name="WindowStateProjectService">
     <state x="997" y="592" width="308" height="216" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1586020992520">
       <screen x="0" y="27" width="1920" height="996" />
     </state>
     <state x="997" y="592" width="308" height="216" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.27.1920.996@0.27.1920.996" timestamp="1586020992520" />
-    <state x="1034" y="110" width="777" height="847" key="CommitChangelistDialog2" timestamp="1586025592952">
+    <state x="1034" y="110" width="777" height="847" key="CommitChangelistDialog2" timestamp="1586025935910">
       <screen x="0" y="27" width="1920" height="996" />
     </state>
-    <state x="1034" y="110" width="777" height="847" key="CommitChangelistDialog2/0.27.1920.996@0.27.1920.996" timestamp="1586025592952" />
+    <state x="1034" y="110" width="777" height="847" key="CommitChangelistDialog2/0.27.1920.996@0.27.1920.996" timestamp="1586025935910" />
+    <state x="374" y="120" width="1536" height="826" key="DiffContextDialog" timestamp="1586025911198">
+      <screen x="0" y="27" width="1920" height="996" />
+    </state>
+    <state x="374" y="120" width="1536" height="826" key="DiffContextDialog/0.27.1920.996@0.27.1920.996" timestamp="1586025911198" />
     <state x="1215" y="451" key="Github.CreateGistDialog" timestamp="1586023607177">
       <screen x="0" y="27" width="1920" height="996" />
     </state>
@@ -86,5 +105,9 @@
       <screen x="0" y="27" width="1920" height="996" />
     </state>
     <state x="616" y="352" key="com.intellij.ide.util.TipDialog/0.27.1920.996@0.27.1920.996" timestamp="1586020481929" />
+    <state x="1198" y="430" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586025973641">
+      <screen x="0" y="27" width="1920" height="996" />
+    </state>
+    <state x="1198" y="430" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1920.996@0.27.1920.996" timestamp="1586025973641" />
   </component>
 </project>
