@@ -1,7 +1,7 @@
 # BitTorrent
 BitTorrent Implementation
 
-1) Bencoding / Bdecoding
+## Bencoding / Bdecoding
 
 Bencode is encoding used by BitTorrent to storing and transmitting data.
 
@@ -11,7 +11,7 @@ It supports 4 different types of values:
 - lists
 - dictionaries
 
-Example:
+*Example:*
 
 5:abcde3:123i12345eli987eli654eei321ee
 i999999999ed3:onei11e3:twoi22ee4:bye!
