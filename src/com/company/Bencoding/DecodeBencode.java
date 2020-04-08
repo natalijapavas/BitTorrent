@@ -9,18 +9,17 @@ import java.util.SortedMap;
 public class DecodeBencode {
     //parses files data as bencode, then prints the data structure to standard output
     public static void main(String[] args) throws IOException{
-        if(!submain(args)){
+        String path="/home/korisnik/Desktop/paper_reading";
+        if(!submain(path)){
             System.err.println("Usage: java DecodeBencode Input.torrent");
             System.exit(1);
         }
     }
 
-    //returns false if the command line arguments ar invalid
-    private static boolean submain(String[] args) throws IOException{
-        if(args.length !=1){
-            return false;
-        }
-        File file = new File(args[0]);
+
+    private static boolean submain(String path) throws IOException{
+
+        File file = new File(path);
         if(!file.isFile())
             return false;
         Object obj;

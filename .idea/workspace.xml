@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d2c03741-b4a7-4aa9-b815-2b3bc216bbfb" name="Default Changelist" comment="bencode update 2">
-      <change afterPath="$PROJECT_DIR$/src/com/company/Bencoding/Bencode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/BitTorrentProject/BCoding/Bencode.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BitTorrentProject.iml" beforeDir="false" afterPath="$PROJECT_DIR$/BitTorrentProject.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Bencoding/DecodeBencode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Bencoding/DecodeBencode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,14 +28,30 @@
   <component name="ProjectId" id="1a2Y5cpJ3IRTqDxw0VsOpdtE8YI" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="DecodeBencode" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.company.Bencoding.DecodeBencode" />
+      <module name="BitTorrentProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.company.Bencoding.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Main" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="com.company.Main" />
       <module name="BitTorrentProject" />
@@ -43,6 +62,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.DecodeBencode" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -101,6 +126,26 @@
       <screen x="0" y="27" width="1920" height="996" />
     </state>
     <state x="1215" y="451" key="Github.CreateGistDialog/0.27.1920.996@0.27.1920.996" timestamp="1586023607177" />
+    <state width="1424" height="189" key="GridCell.Tab.0.bottom" timestamp="1586380489849">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1424" height="189" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1586380489849" />
+    <state width="1424" height="189" key="GridCell.Tab.0.center" timestamp="1586380489848">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1424" height="189" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1586380489848" />
+    <state width="1424" height="189" key="GridCell.Tab.0.left" timestamp="1586380489848">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1424" height="189" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1586380489848" />
+    <state width="1424" height="189" key="GridCell.Tab.0.right" timestamp="1586380489849">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1424" height="189" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1586380489849" />
+    <state x="845" y="216" width="1022" height="737" key="SettingsEditor" timestamp="1586281334829">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="845" y="216" width="1022" height="737" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1586281334829" />
     <state x="616" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1586020481929">
       <screen x="0" y="27" width="1920" height="996" />
     </state>
