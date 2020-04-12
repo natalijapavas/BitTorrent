@@ -54,3 +54,6 @@ Cooperative state: Unchoked, Interested.
 
 ### Peer Message Exchange
 ![](src/com/company/images/peerMessageExchange.png)
+
+### Peer Message Formats
+![](src/com/company/images/peerMessageFormats.png)
