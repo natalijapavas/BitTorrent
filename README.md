@@ -23,3 +23,34 @@ bdecoder is supposed to translate this bencode data like this:
 - 'l' means its a list  => (int) 987, (int) 654 
 - ...
 - 'd' means its a dictionary => (string) one : (int) 11, (string) two : (int) 22
+
+## Peer Class
+
+Working with Peers:
+* Manage Peer State
+  * Chocked
+  * Interested
+* Peer Messages
+  * Handshake
+  * Keep Alive
+  * Choke
+  * Unchoke
+  * Interested
+  * Not Interested
+  * Have
+  * Bitfield
+  * Request
+  * Piece
+  
+Inital state: Chocked, Not Interested.
+
+Cooperative state: Unchoked, Interested.
+
+
+
+### Handshake
+![](src/com/company/images/handshake.png)
+
+
+### Peer Message Exchange
+![](src/com/company/images/peerMessageExchange.png)
