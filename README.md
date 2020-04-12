@@ -49,11 +49,11 @@ Cooperative state: Unchoked, Interested.
 
 
 ### Handshake
-![](src/com/company/images/handshake.png)
+![](images/handshake.png)
 
 
 ### Peer Message Exchange
-![](src/com/company/images/peerMessageExchange.png)
+![](images/peerMessageExchange.png)
 
 ### Peer Message Formats
-![](src/com/company/images/peerMessageFormats.png)
+![](images/peerMessageFormats.png)
