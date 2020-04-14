@@ -63,7 +63,7 @@ public class Peer {
     }
 
     //connect to a peer
-    public synchronized boolean createSockett(Tracker track,String ip, int port) throws IOException{
+    public synchronized boolean createSocket(Tracker track,String ip, int port) throws IOException{
         Socket sock = null;
         System.out.println("create");
         try{
