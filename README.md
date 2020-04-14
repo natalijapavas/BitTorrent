@@ -6,10 +6,10 @@ BitTorrent Implementation
 Bencode is encoding used by BitTorrent to storing and transmitting data.
 
 It supports 4 different types of values:
-- integers: i<integer in ASCCI>e
-- byte strings: <string length in ASCCI>:<string data>
-- lists: l<bencoded value>....<bencoded value>e
-- dictionaries d<bencoded string><bencoded element>e
+- integers: i/<integer in ASCCI>e
+- byte strings: /<string length in ASCCI>:/<string data>
+- lists: l/<bencoded value>..../<bencoded value>e
+- dictionaries d/<bencoded string>/<bencoded element>e
 
 *Example:*
 
