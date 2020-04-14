@@ -24,6 +24,21 @@ bdecoder is supposed to translate this bencode data like this:
 - ...
 - 'd' means its a dictionary => (string) one : (int) 11, (string) two : (int) 22
 
+## Tracker Protocol
+Tracker allows peers to find other peers sharing the same content.
+It returns a random list of peers that have that content.
+When a peer wants to share or download, it contacts the tracker using HTTP GET request (Tracker HTTP Protocol).
+
+Tracker communication:
+* infoHash: 20 byte hash of value of the info ket from the metafile.
+* peerId: 20 byte string used as a unique ID for the client
+* port: port number that the client is listening on
+* uploaded: total amount uploaded
+* downloaded: total amount downloaded
+* left: number of bites the client still has to download
+
+
+
 ## Peer Wire Protocol
 Message exchange between peers is done using the Peer Wire Protocol.
 
@@ -32,16 +47,17 @@ Working with Peers:
   * Chocked
   * Interested
 * Peer Messages
-  * Handshake
-  * Keep Alive
-  * Choke
-  * Unchoke
-  * Interested
-  * Not Interested
-  * Have
-  * Bitfield
-  * Request
-  * Piece
+  * Handshake - initial message between peers
+  * Keep Alive - keep the connection alve
+  * Choke - informing the remote peer that it is choked
+  * Unchoke - informing the remote peer that it is unchoked
+  * Interested - informing the remote peer that we are interested
+  * Not Interested - informing the remote peer that we are not interested
+  * Have - informing remote peers that we have the new piece
+  * Bitfield -  message indicating which pieces a peer has, so other peers can decide whether they are interested or not.
+  * Request - request a piece of the ocntent from a remote peer
+  * Piece - sends a piece of content to a remote peer
+  * Cancel - cancela  piece request
   
 Inital state: Chocked, Not Interested.
 
