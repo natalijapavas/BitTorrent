@@ -78,7 +78,6 @@ public class BencodeValue {
 
     /**
      * Returns this BencodeValue as a byte[].
-     *
      */
     public byte[] getBytes() throws BencodeFormatException {
         try {
@@ -89,7 +88,7 @@ public class BencodeValue {
     }
 
     /**
-     * Returns this BencodeValue as a Number.
+     * Returns BencodeValue as a Number.
      */
     public Number getNumber() throws BencodeFormatException {
         try {
@@ -100,31 +99,28 @@ public class BencodeValue {
     }
 
     /**
-     * Returns this BencodeValue as short.
+     * Returns BencodeValue as short.
      */
     public short getShort() throws BencodeFormatException {
         return this.getNumber().shortValue();
     }
 
     /**
-     * Returns this BencodeValue as int.
-     *
+     * Returns BencodeValue as int
      */
     public int getInt() throws BencodeFormatException {
         return this.getNumber().intValue();
     }
 
     /**
-     * Returns this BEValue as long.
-     *
+     * Returns BecodeValue as long
      */
     public long getLong() throws BencodeFormatException {
         return this.getNumber().longValue();
     }
 
     /**
-     * Returns this BEValue as a List of BEValues.
-     *
+     * Returns a list of BencodeValues
      */
 
     public List<BencodeValue> getList() throws BencodeFormatException {
@@ -136,8 +132,7 @@ public class BencodeValue {
     }
 
     /**
-     * Returns this BEValue as a Map of String keys and BEValue values.
-     *
+     * Returns a map of String:BencodeValue pairs
      */
     public Map<String, BencodeValue> getMap() throws BencodeFormatException {
         if (this.value instanceof HashMap) {

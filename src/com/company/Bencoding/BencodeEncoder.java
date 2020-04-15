@@ -90,14 +90,14 @@ public class BencodeEncoder {
     }
 
     private void encodeMap() throws IOException {
+
         this.out.write('d');
-
         Map<String,Object> map=(Map<String, Object>)this.encodedObject;
-        Set<String> s = map.keySet();
-        List<String> l = new ArrayList<String>(s);
-        Collections.sort(l);
+        Set<String> keySet = map.keySet();
+        List<String> keyList = new ArrayList<String>(keySet);
+        Collections.sort(keyList);
 
-        for (String key : l) {
+        for (String key : keyList) {
             Object value = map.get(key);
             new BencodeEncoder(key,this.out).encode();
             new BencodeEncoder(value,this.out).encode();
@@ -115,17 +115,11 @@ public class BencodeEncoder {
         this.out = out;
     }
 
-//Currently serves as test function to see "nice" structure of file
+    /**Currently serves as test function to see "nice" structure of file
+     *
+     */
     public String printBencodedValue(ByteArrayOutputStream baos) throws IOException {
         this.setOut(baos);
         this.encode();
         return new String( baos.toByteArray(), StandardCharsets.UTF_8);
-    }
-    /*public static ByteBuffer encode(Map<String, BencodeValue> m)
-            throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        BencodeEncoder.encode(m, baos);
-        baos.close();
-        return ByteBuffer.wrap(baos.toByteArray());
-    } */
-}
+    }}

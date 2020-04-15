@@ -1,10 +1,8 @@
 package com.company.Bencoding;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.EOFException;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -15,7 +13,7 @@ import java.util.Map;
  * Class fields:
  * -InputsSream in
  * -int indicator, which determines next bencoded object to be decoded. Indicator can take following values:
- *  -- Zero if unknown.
+ *      0 if unknown.
  *     '0'..'9' for a byte[].
  *     'i' for an Number.
  *     'l' for a List.
@@ -23,7 +21,6 @@ import java.util.Map;
  *     'e' specifies end of Number, List or Map (only used internally).
  *     -1  end of stream.
 */
-
 
 public class BencodeDecoder {
 
@@ -33,32 +30,6 @@ public class BencodeDecoder {
     public BencodeDecoder(InputStream in)
     {
         this.in = in;
-    }
-
-
-    //Ja bih ovo da prepravim da ipak ne radi kao staticki metod, stvara suvise overhead-a u pozivu
-    /**
-     Static method which serves to decode given input stream. Since it is public, it will be used whenever decoding
-     is necessary. J
-     */
-    /*public static BencodeValue decode(InputStream in) throws IOException {
-        return new BencodeDecoder(in).decode();
-    } */
-
-    /**
-     * Decode a B-encoded byte buffer.
-     *
-     * <p>
-     * Automatically instantiates a new BencodeDecoder for the provided buffer and
-     * decodes its root member.
-     * </p>
-     *
-     * @param data The {@link ByteBuffer} to read from.
-     */
-    public static BencodeValue bdecode(ByteBuffer data) throws IOException {
-//        return BencodeDecoder.decode(new AutoCloseInputStream(
-//                new ByteArrayInputStream(data.array())));
-        return new BencodeDecoder(new ByteArrayInputStream(data.array())).decode();
     }
 
     /**
@@ -74,7 +45,7 @@ public class BencodeDecoder {
 
     /**
      * Gets the next indicator and returns either null when the stream
-     * has ended or b-decodes the rest of the stream and returns the
+     * has ended or decodes the rest of the stream and returns the
      * appropriate BencodeValue encoded object.
      */
     public BencodeValue decode() throws IOException	{
@@ -96,42 +67,40 @@ public class BencodeDecoder {
     }
 
     /**
-     * Returns the next b-encoded value on the stream and makes sure it is a
+     * Returns the next bencoded value on the stream and makes sure it is a
      * byte array.
      */
     public BencodeValue decodeBytes() throws IOException {
         int c = this.getNextIndicator();
         int num = c - '0';
         if (num < 0 || num > 9)
-            throw new BencodeFormatException("Number expected, not '"
+            throw new BencodeFormatException("Next char should be a digit, instead it is: '"
                     + (char)c + "'");
         this.indicator = 0;
 
         c = this.read();
         int i = c - '0';
         while (i >= 0 && i <= 9) {
-            // This can overflow!
             num = num*10 + i; //reconstruct a number digit by digit
             c = this.read();
             i = c - '0';
         }
 
         if (c != ':') {
-            throw new BencodeFormatException("Colon expected, not '" +
+            throw new BencodeFormatException("Next char should be a colon, instead it is: '" +
                     (char)c + "'");
         }
-
         return new BencodeValue(read(num));
     }
 
     /**
-     * Returns the next b-encoded value on the stream and makes sure it is a
-     * number.
+     * Returns next bencoded value on the stream if it is a number, or throws an exception instead
+     * A max of 256 digits is supported
      */
     public BencodeValue decodeNumber() throws IOException {
         int c = this.getNextIndicator();
         if (c != 'i') {
-            throw new BencodeFormatException("Expected 'i', not '" +
+            throw new BencodeFormatException("Number begins with an 'i', not '" +
                     (char)c + "'");
         }
         this.indicator = 0;
@@ -142,11 +111,9 @@ public class BencodeDecoder {
             if (c == 'e')
                 return new BencodeValue(BigInteger.ZERO);
             else
-                throw new BencodeFormatException("'e' expected after zero," +
-                        " not '" + (char)c + "'");
+                throw new BencodeFormatException("Number ends with an 'e', not '" + (char)c + "'");
         }
 
-        // We don't support more the 255 char big integers
         char[] chars = new char[256];
         int off = 0;
 
@@ -181,13 +148,12 @@ public class BencodeDecoder {
     }
 
     /**
-     * Returns the next b-encoded value on the stream and makes sure it is a
-     * list.
+     * Returns the next bencoded value from the stream if it is a list
      */
     public BencodeValue decodeList() throws IOException {
         int c = this.getNextIndicator();
         if (c != 'l') {
-            throw new BencodeFormatException("Expected 'l', not '" +
+            throw new BencodeFormatException("List begins with 'l', not '" +
                     (char)c + "'");
         }
         this.indicator = 0;
@@ -204,13 +170,13 @@ public class BencodeDecoder {
     }
 
     /**
-     * Returns the next b-encoded value on the stream and makes sure it is a
+     * Returns the next bencoded value on the stream and makes sure it is a
      * map (dictionary).
      */
     public BencodeValue decodeMap() throws IOException {
         int c = this.getNextIndicator();
         if (c != 'd') {
-            throw new BencodeFormatException("Expected 'd', not '" +
+            throw new BencodeFormatException("Dictionary begins with a 'd', not '" +
                     (char)c + "'");
         }
         this.indicator = 0;
@@ -233,8 +199,6 @@ public class BencodeDecoder {
 
     /**
      * Returns the next byte read from the InputStream (as int).
-     *
-     * @throws EOFException If InputStream.read() returned -1.
      */
     private int read() throws IOException {
         int c = this.in.read();
@@ -262,7 +226,6 @@ public class BencodeDecoder {
                 throw new EOFException();
             read += i;
         }
-
         return result;
     }
 }

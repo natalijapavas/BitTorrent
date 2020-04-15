@@ -16,9 +16,7 @@ public class DecodeBencode {
         }
     }
 
-
     private static boolean submain(String path) throws IOException{
-
         File file = new File(path);
         if(!file.isFile())
             return false;
@@ -29,7 +27,6 @@ public class DecodeBencode {
         printBencodeValue(obj,0);
         return true;
     }
-
 
     //recursively prints value/stucture to standard output
     private static void printBencodeValue(Object obj, int d){
@@ -76,7 +73,6 @@ public class DecodeBencode {
                 printBencodeValue(e.getValue(), d + 1);
             }
         }
-
         else
             throw new IllegalArgumentException("Unsupported type: " + obj.getClass().getName());
     }
@@ -118,7 +114,6 @@ public class DecodeBencode {
         }
         return sb.toString();
     }
-
 
     //prints indentations 
     private static void printIndent(int d){

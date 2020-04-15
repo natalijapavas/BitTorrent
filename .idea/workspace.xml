@@ -3,6 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="d2c03741-b4a7-4aa9-b815-2b3bc216bbfb" name="Default Changelist" comment="bencode update 2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Bencoding/BencodeDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Bencoding/BencodeDecoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Bencoding/BencodeEncoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Bencoding/BencodeEncoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Bencoding/BencodeValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Bencoding/BencodeValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Bencoding/DecodeBencode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Bencoding/DecodeBencode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/MetaInfoFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/MetaInfoFile.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +31,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -141,13 +147,22 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="845" y="216" width="1022" height="737" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1586281334829" />
+    <state x="535" y="220" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1586385112482">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="535" y="220" width="800" height="535" key="Vcs.Push.Dialog.v2/67.27.1853.1053@67.27.1853.1053" timestamp="1586385112482" />
     <state x="616" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1586020481929">
       <screen x="0" y="27" width="1920" height="996" />
     </state>
     <state x="616" y="352" key="com.intellij.ide.util.TipDialog/0.27.1920.996@0.27.1920.996" timestamp="1586020481929" />
-    <state x="1198" y="430" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586025973641">
-      <screen x="0" y="27" width="1920" height="996" />
+    <state x="1028" y="449" width="448" height="177" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586384888457">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="1198" y="430" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1920.996@0.27.1920.996" timestamp="1586025973641" />
+    <state x="1028" y="449" width="448" height="177" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.27.1853.1053@67.27.1853.1053" timestamp="1586384888457" />
+    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup" timestamp="1586695569609">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1586695569609" />
   </component>
 </project>

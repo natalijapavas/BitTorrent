@@ -1,13 +1,12 @@
 /*******************************************************
  * MetaInfoFile - Stores relevant information in .Torrent File
  * Fields:
- * -announceUrl = Stores URL of the tracker
- * -infoHashBytes = will store SHA-1 value of bencoded 'info' dict as a 20-byte array
- * -infoHashHex = same, but stored as hex string
- * -infoHashUrl = url type of data above
+ * -announceUrl = Stores URL of the tracker\
  * -fileLength = Length of the file to be downloaded (Single file mode)
- * -pieceLength = Size of each piece of the file
+ * -pieceLength = Size of each piece of the fil
  *
+ *
+ * TODO: While writing tracker, consider how to change some of the getter methods
  */
 
 
@@ -29,7 +28,6 @@ public class MetaInfoFile {
     private Map<String, BencodeValue> fileContent;
     private char fileMode='n'; //s for single file, m for multiple, n for none
 
-
     public MetaInfoFile()
     {
     }
@@ -39,7 +37,7 @@ public class MetaInfoFile {
         this.fileContent=object.getMap();
     }
 
-    public void setFileType() throws BencodeFormatException {
+    public void setFileMode() throws BencodeFormatException {
         Map<String,BencodeValue>info=this.getInfoMap();
         Set<String>keySet=info.keySet();
         if(keySet.contains("length") && keySet.contains("path"))
@@ -109,6 +107,42 @@ public class MetaInfoFile {
         }
         return infoMap.get("piece length").getString();
     }
+
+    public String getName() throws BencodeFormatException {
+        Map<String,BencodeValue>infoMap=this.getInfoMap();
+        Set<String> keySet=infoMap.keySet();
+        if(!keySet.contains("name"))
+            return null;
+        return infoMap.get("name").getString();
+    }
+
+    public int getFileLength() throws BencodeFormatException
+    {
+        if(this.fileMode!='s')
+            return 0;
+        Map<String,BencodeValue>infoMap=this.getInfoMap();
+        Set<String> keySet=infoMap.keySet();
+        if(!keySet.contains("length"))
+            return 0;
+        return infoMap.get("length").getInt();
+    }
+
+    //Depending on tracker, this may or may not be changed
+    public BencodeValue getFiles() throws BencodeFormatException
+    {
+        if(this.fileMode!='m')
+            return null;
+        Map<String,BencodeValue>infoMap=this.getInfoMap();
+        Set<String> keySet=infoMap.keySet();
+        if(!keySet.contains("files"))
+            return null;
+        return infoMap.get("files");
+    }
+
+
+
+
+
 
 }
 
