@@ -24,7 +24,6 @@ public class TrackerTalker {
 
     public BencodeValue sendHTTPGetRequest()
     {
-
         BencodeValue response=null;
         try {
             String query=this.generateQuery(); //GET request parameters
@@ -97,6 +96,10 @@ private String generatePeerId()
         return strBuffer.toString();
     }
 
+    /** Returns one of the standard port numbers for bittorrent protocol, or -1 if not available
+     *
+     * @return
+     */
   private int generatePortNumber()
   {
       int MIN_PORT=6881;
@@ -116,10 +119,10 @@ private String generatePeerId()
 
             // If the code makes it this far without an exception it means
             // something is using the port and has responded.
-            System.out.println("--------------Port " + port + " is not available");
+            System.out.println("Port " + port + " is not available");
             return false;
         } catch (IOException e) {
-            System.out.println("--------------Port " + port + " is available");
+            System.out.println("Port " + port + " is available");
             return true;
         } finally {
             if( s != null){
