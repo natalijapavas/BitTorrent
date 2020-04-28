@@ -2,12 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d2c03741-b4a7-4aa9-b815-2b3bc216bbfb" name="Default Changelist" comment="bencode update 2">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/Bencoding/BencodeDecoder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/Bencoding/BencodeDecoder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/Bencoding/BencodeEncoder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/Bencoding/BencodeEncoder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/Bencoding/BencodeValue.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/Bencoding/BencodeValue.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/Bencoding/DecodeBencode.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/MetaInfoFile.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BitTorrentProject/com/company/MetaInfoFile.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/Bencoding/BencodeDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Bencoding/BencodeDecoder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/Bencoding/BencodeEncoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Bencoding/BencodeEncoder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/Bencoding/BencodeValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Bencoding/BencodeValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/Bencoding/DecodeBencode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Bencoding/DecodeBencode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/MetaInfoFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/MetaInfoFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Peer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Peer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Tracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Tracker.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,10 +43,10 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.tools" />
   </component>
   <component name="RunManager" selected="Application.Main">
     <configuration name="DecodeBencode" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -111,6 +120,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="bencode update 2" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="712" y="257" width="553" height="606" key="#com.intellij.ide.util.MemberChooser" timestamp="1587572932067">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="712" y="257" width="553" height="606" key="#com.intellij.ide.util.MemberChooser/67.27.1853.1053@67.27.1853.1053" timestamp="1587572932067" />
     <state x="997" y="592" width="308" height="216" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1586020992520">
       <screen x="0" y="27" width="1920" height="996" />
     </state>
@@ -127,26 +140,42 @@
       <screen x="0" y="27" width="1920" height="996" />
     </state>
     <state x="1215" y="451" key="Github.CreateGistDialog/0.27.1920.996@0.27.1920.996" timestamp="1586023607177" />
-    <state width="1424" height="189" key="GridCell.Tab.0.bottom" timestamp="1586384722758">
+    <state width="1807" height="274" key="GridCell.Tab.0.bottom" timestamp="1588067168340">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1424" height="189" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1586384722758" />
-    <state width="1424" height="189" key="GridCell.Tab.0.center" timestamp="1586384722757">
+    <state width="1807" height="274" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588067168340" />
+    <state width="1807" height="274" key="GridCell.Tab.0.center" timestamp="1588067168340">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1424" height="189" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1586384722757" />
-    <state width="1424" height="189" key="GridCell.Tab.0.left" timestamp="1586384722756">
+    <state width="1807" height="274" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588067168340" />
+    <state width="1807" height="274" key="GridCell.Tab.0.left" timestamp="1588067168339">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1424" height="189" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1586384722756" />
-    <state width="1424" height="189" key="GridCell.Tab.0.right" timestamp="1586384722757">
+    <state width="1807" height="274" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588067168339" />
+    <state width="1807" height="274" key="GridCell.Tab.0.right" timestamp="1588067168340">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1424" height="189" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1586384722757" />
-    <state x="845" y="216" width="1022" height="737" key="SettingsEditor" timestamp="1586281334829">
+    <state width="1807" height="274" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588067168340" />
+    <state width="1807" height="340" key="GridCell.Tab.1.bottom" timestamp="1587912884509">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="845" y="216" width="1022" height="737" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1586281334829" />
+    <state width="1807" height="340" key="GridCell.Tab.1.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1587912884509" />
+    <state width="1807" height="340" key="GridCell.Tab.1.center" timestamp="1587912884508">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1807" height="340" key="GridCell.Tab.1.center/67.27.1853.1053@67.27.1853.1053" timestamp="1587912884508" />
+    <state width="1807" height="340" key="GridCell.Tab.1.left" timestamp="1587912884508">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1807" height="340" key="GridCell.Tab.1.left/67.27.1853.1053@67.27.1853.1053" timestamp="1587912884508" />
+    <state width="1807" height="340" key="GridCell.Tab.1.right" timestamp="1587912884509">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1807" height="340" key="GridCell.Tab.1.right/67.27.1853.1053@67.27.1853.1053" timestamp="1587912884509" />
+    <state x="845" y="216" width="1022" height="737" key="SettingsEditor" timestamp="1587821369047">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="845" y="216" width="1022" height="737" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1587821369047" />
     <state x="535" y="220" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1586385112482">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
@@ -160,9 +189,9 @@
     </state>
     <state x="1198" y="430" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1920.996@0.27.1920.996" timestamp="1586025973641" />
     <state x="1028" y="449" width="448" height="177" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.27.1853.1053@67.27.1853.1053" timestamp="1586384888457" />
-    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup" timestamp="1586695569609">
+    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup" timestamp="1588070207844">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1586695569609" />
+    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1588070207844" />
   </component>
 </project>

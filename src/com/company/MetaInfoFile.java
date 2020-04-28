@@ -1,41 +1,110 @@
-/*******************************************************
+/*****************************************************
  * MetaInfoFile - Stores relevant information in .Torrent File
  * Fields:
  * -announceUrl = Stores URL of the tracker\
  * -fileLength = Length of the file to be downloaded (Single file mode)
  * -pieceLength = Size of each piece of the fil
  *
- *
- * TODO: While writing tracker, consider how to change some of the getter methods
  */
-
 
 package com.company;
 import com.company.Bencoding.BencodeDecoder;
+import com.company.Bencoding.BencodeEncoder;
 import com.company.Bencoding.BencodeValue;
 import com.company.Bencoding.BencodeFormatException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
-/*TODO add announce-list getter */
+
 /*TODO add methods for extracting fields in single and multiple file mode */
-/*TODO add method for comparing SHA-1 values (when Tracker done)*/
+
+
 
 public class MetaInfoFile {
     private Map<String, BencodeValue> fileContent;
     private char fileMode='n'; //s for single file, m for multiple, n for none
+    private byte[] infohHash;
+    private String infoHashHex;
 
-    public MetaInfoFile()
-    {
-    }
 
-    public void readFileContent(InputStream inputStream) throws IOException {
+    public MetaInfoFile(){}
+
+    public void readFileContent(InputStream inputStream) throws IOException, NoSuchAlgorithmException {
         BencodeValue object=new BencodeDecoder(inputStream).decode();
         this.fileContent=object.getMap();
+        this.calculateInfoHash2();
     }
+
+
+
+    private void calculateInfoHash2() throws NoSuchAlgorithmException, IOException {
+        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+
+        ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+        outputStream.write('d');
+        BencodeEncoder encoder=new BencodeEncoder(outputStream);
+        Map<String, BencodeValue> infoDictionary=this.getInfoMap();
+        for(Map.Entry entry: infoDictionary.entrySet())
+        {
+            encoder.encode(entry.getKey());
+            encoder.encode(entry.getValue());
+        }
+        outputStream.write('e');
+        File fileTest=new File("/home/korisnik/Desktop/torrents/test.txt");
+        FileOutputStream fileTestOutput=new FileOutputStream(fileTest);
+        fileTestOutput.write(outputStream.toByteArray());
+        fileTestOutput.close();
+        this.infohHash =sha1.digest(outputStream.toByteArray());
+        this.infoHashHex=javax.xml.bind.DatatypeConverter.printHexBinary(infohHash);
+    }
+
+    public String getInfoHashHex() {
+        return infoHashHex;
+    }
+
+    public byte[] getInfoHash() {
+        return infohHash;
+    }
+
+    public Map<String, BencodeValue> getFileContent() {
+        return fileContent;
+    }
+
+    /*public static String calculateInfoHash1(ByteArrayOutputStream outputStream) throws NoSuchAlgorithmException {
+        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+        byte[] hash =sha1.digest(outputStream.toByteArray());
+        return javax.xml.bind.DatatypeConverter.printHexBinary(hash);
+    } */
+
+    /*public static String calculateInfoHash(String filePath) throws NoSuchAlgorithmException {
+        File torrentFile=new File(filePath);
+        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+        InputStream input = null;
+
+        try {
+            input = new FileInputStream(torrentFile);
+            StringBuilder builder = new StringBuilder();
+            while (!builder.toString().endsWith("4:info")) {
+                builder.append((char) input.read());
+            }
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            for (int data; (data = input.read()) > -1; output.write(data));
+            sha1.update(output.toByteArray(), 0, output.size() - 1);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (input != null) try { input.close(); } catch (IOException ignore) {}
+        }
+        byte[] hash = sha1.digest();
+        return javax.xml.bind.DatatypeConverter.printHexBinary(hash);
+
+
+    } */
+
 
     public void setFileMode() throws BencodeFormatException {
         Map<String,BencodeValue>info=this.getInfoMap();
@@ -77,15 +146,20 @@ public class MetaInfoFile {
         return this.fileContent.get("info").getMap();
     }
 
-    public BencodeValue getBencodedInfoMapValue(String key) throws BencodeFormatException {
-        Map<String,BencodeValue>infoMap=this.getInfoMap();
-        Set<String> keySet=infoMap.keySet();
-        if(!keySet.contains(key))
+    /*public String getBencodedInfoMapValue() throws IOException {
+        Map<String,BencodeValue> infoMap=this.getInfoMap();
+        ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+        for(Map.Entry entry:infoMap.entrySet())
         {
-            return null;
+            String key=(String)entry.getKey();
+            String value=(String)entry.getValue();
+            outputStream.write(key.length());
+            outputStream.write(key.getBytes());
+
         }
-        return infoMap.get(key);
-    }
+        System.out.println("Bencode size: " +outputStream.toByteArray().length);
+        return new String(outputStream.toByteArray(),StandardCharsets.UTF_8);
+    } */
 
     public int getPieceLength() throws BencodeFormatException {
         Map<String,BencodeValue>infoMap=this.getInfoMap();
@@ -139,11 +213,5 @@ public class MetaInfoFile {
         return infoMap.get("files");
     }
 
-
-
-
-
-
 }
-
 

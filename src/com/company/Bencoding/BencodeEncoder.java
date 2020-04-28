@@ -1,13 +1,9 @@
 package com.company.Bencoding;
-import java.io.ByteArrayOutputStream;
+import java.lang.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class serves to perform encoding Java objects in Bencoded format.
@@ -20,106 +16,104 @@ import java.util.Set;
  * Other types are not supported by the specification.
  */
 public class BencodeEncoder {
-    private Object encodedObject;
-    private OutputStream out;
+    private OutputStream outputStream;
 
-    public BencodeEncoder(Object encodedObject, OutputStream out) {
-        this.encodedObject = encodedObject;
-        this.out = out;
+    public BencodeEncoder(OutputStream out) {
+        this.outputStream=out;
+
     }
 
-    public void encode() throws IOException, IllegalArgumentException {
-        if (this.encodedObject instanceof BencodeValue) {
-            this.encodedObject = ((BencodeValue) encodedObject).getValue();
+    public void encode(Object encodedObject) throws IOException, IllegalArgumentException {
+        if (encodedObject instanceof BencodeValue) {
+            encodeBencodeValue((BencodeValue)encodedObject);
         }
 
-        if (this.encodedObject instanceof String) {
-            this.encodeString();
+        else if (encodedObject instanceof String) {
+            encodeString((String)encodedObject);
         }
-        else if (this.encodedObject instanceof byte[]) {
-            encodeBytes();
+        else if (encodedObject instanceof byte[]) {
+            encodeBytes((byte[])encodedObject);
         }
-        else if (this.encodedObject instanceof Number) {
-            encodeNumber();
+        else if (encodedObject instanceof Number) {
+            encodeNumber((Number)encodedObject);
         }
-        else if (this.encodedObject instanceof List) {
-            encodeList();
+        else if (encodedObject instanceof List) {
+            encodeList((List<BencodeValue>)encodedObject);
         }
-        else if (this.encodedObject instanceof Map) {
-            encodeMap();
+        else if (encodedObject instanceof Map) {
+            encodeMap((LinkedHashMap<String,BencodeValue>) encodedObject);
         }
         else {
             throw new IllegalArgumentException("Cannot bencode: " +
-                    this.encodedObject.getClass());
+                    encodedObject.getClass());
         }
     }
 
-    private static void encodeByteArray(byte[] bytes, OutputStream out) throws IOException {
+    public void encodeBencodeValue(BencodeValue bencodeValue) throws IOException {
+        if(bencodeValue.getValueType()=='b')
+                encodeBytes((byte[])(bencodeValue.getValue()));
+        else if(bencodeValue.getValueType()=='i')
+                encodeNumber((Number)(bencodeValue.getValue()));
+        else if(bencodeValue.getValueType()=='l')
+                encodeList((List<BencodeValue>)(bencodeValue.getValue()));
+        else if(bencodeValue.getValueType()=='d')
+                encodeMap((LinkedHashMap<String,BencodeValue>)(bencodeValue.getValue()));
+        else
+                throw new BencodeFormatException("Unknown Bencode format");
+        }
 
+
+
+    private static void encodeByteArray(byte[] bytes, OutputStream out) throws IOException {
         String l = Integer.toString(bytes.length);
         out.write(l.getBytes(StandardCharsets.UTF_8));
         out.write(':');
         out.write(bytes);
     }
 
-    private void encodeBytes() throws IOException
+    private void encodeBytes(byte[] encodedObject) throws IOException
     {
-        encodeByteArray((byte[])this.encodedObject,this.out);
+        encodeByteArray(encodedObject,this.outputStream);
     }
 
-    private void encodeString() throws IOException {
-        byte[] bytes = ((String)this.encodedObject).getBytes(StandardCharsets.UTF_8);
-        encodeByteArray(bytes,this.out);
+    private void encodeString(String encodedObject) throws IOException {
+        byte[] bytes =encodedObject.getBytes(StandardCharsets.UTF_8);
+        encodeByteArray(bytes,this.outputStream);
     }
 
-    private void encodeNumber() throws IOException {
-        this.out.write('i');
-        String s = ((Number)this.encodedObject).toString();
-        this.out.write(s.getBytes("UTF-8"));
-        this.out.write('e');
+    private void encodeNumber(Number encodedObject) throws IOException {
+        this.outputStream.write('i');
+        String s = encodedObject.toString();
+        this.outputStream.write(s.getBytes("UTF-8"));
+        this.outputStream.write('e');
     }
 
-    private void encodeList() throws IOException
+    private void encodeList(List<BencodeValue> list) throws IOException
     {
-        this.out.write('l');
-        List<BencodeValue> list=(List<BencodeValue>)this.encodedObject;
+        this.outputStream.write('l');
         for (BencodeValue value : list) {
-            new BencodeEncoder(value, this.out).encode();
+            new BencodeEncoder(this.outputStream).encode(value);
         }
-        this.out.write('e');
+        this.outputStream.write('e');
     }
 
-    private void encodeMap() throws IOException {
+    private void encodeMap(LinkedHashMap<String,BencodeValue> map) throws IOException {
 
-        this.out.write('d');
-        Map<String,Object> map=(Map<String, Object>)this.encodedObject;
+        this.outputStream.write('d');
+         //mozda staviti da bude LinkedHashMap?
         Set<String> keySet = map.keySet();
-        List<String> keyList = new ArrayList<String>(keySet);
-        Collections.sort(keyList);
-
-        for (String key : keyList) {
-            Object value = map.get(key);
-            new BencodeEncoder(key,this.out).encode();
-            new BencodeEncoder(value,this.out).encode();
+        for (String key : keySet) {
+            BencodeValue value = map.get(key);
+            new BencodeEncoder(this.outputStream).encode(value);
+            new BencodeEncoder(this.outputStream).encode(value);
         }
-
-        this.out.write('e');
+        this.outputStream.write('e');
     }
 
-    public void setEncodedObject(Object encodedObject)
-    {
-        this.encodedObject=encodedObject;
+
+
+    public void setOutputStream(OutputStream out) {
+        this.outputStream = out;
     }
 
-    public void setOut(OutputStream out) {
-        this.out = out;
-    }
-
-    /**Currently serves as test function to see "nice" structure of file
-     *
-     */
-    public String printBencodedValue(ByteArrayOutputStream baos) throws IOException {
-        this.setOut(baos);
-        this.encode();
-        return new String( baos.toByteArray(), StandardCharsets.UTF_8);
-    }}
+}

@@ -1,11 +1,7 @@
 package com.company.Bencoding;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 
 /** BencodeValue serves as a wrapper class to support all data types in Java which can be Bencoded.
  * Following data types are supported:
@@ -19,47 +15,63 @@ import java.util.Map;
 public class BencodeValue {
 
     private final Object value;
+    private char valueType;
 
-    //Construct a series of constructors for each of the supported data types in Java
+    //ByteArrayBuffer byteArrayBuffer=new ByteArrayBuffer()
+
+
     public BencodeValue(byte[] value) {
         this.value = value;
+        this.valueType='b';
     }
 
     public BencodeValue(String value) throws UnsupportedEncodingException {
         this.value = value.getBytes(StandardCharsets.UTF_8);
+        this.valueType='b';
     }
 
     public BencodeValue(String value, String enc)
             throws UnsupportedEncodingException {
         this.value = value.getBytes(enc);
+        this.valueType='b';
     }
 
     public BencodeValue(int value) {
         this.value = new Integer(value);
+        this.valueType='i';
     }
 
     public BencodeValue(long value) {
         this.value = new Long(value);
+        this.valueType='i';
     }
 
     public BencodeValue(Number value) {
         this.value = value;
+        this.valueType='i';
     }
 
     public BencodeValue(List<BencodeValue> value) {
         this.value = value;
+        this.valueType='l';
     }
 
     public BencodeValue(Map<String, BencodeValue> value) {
         this.value = value;
+        this.valueType='d';
     }
 
+
     public Object getValue() {
-        return this.value;
+        return value;
     }
 
     public String getString() throws BencodeFormatException {
         return this.getString("UTF-8");
+    }
+
+    public char getValueType() {
+        return valueType;
     }
 
     /**
@@ -127,7 +139,7 @@ public class BencodeValue {
         if (this.value instanceof ArrayList) {
             return (ArrayList<BencodeValue>)this.value;
         } else {
-            throw new BencodeFormatException("Excepted List<BEvalue> !");
+            throw new BencodeFormatException("Excepted List<BencodeValue> !");
         }
     }
 
@@ -136,9 +148,44 @@ public class BencodeValue {
      */
     public Map<String, BencodeValue> getMap() throws BencodeFormatException {
         if (this.value instanceof HashMap) {
-            return (Map<String, BencodeValue>)this.value;
+            return (LinkedHashMap<String, BencodeValue>)this.value;
         } else {
-            throw new BencodeFormatException("Expected Map<String, BEValue> !");
+            throw new BencodeFormatException("Expected Map<String, BencodeValue> !");
         }
     }
+
+    @Override
+    public String toString() {
+        try {
+            if (value instanceof byte[]) {
+                return this.getBytes().toString();
+            } else if (value instanceof String) {
+                return (String)value;
+            } else if (value instanceof Number) {
+                return this.getNumber().toString();
+            } else if (value instanceof List) {
+                StringBuilder stringBuilder = new StringBuilder("[ ");
+                List <BencodeValue>valueList=this.getList();
+                for(BencodeValue bencodeValue:valueList)
+                    stringBuilder.append(bencodeValue.toString()+",");
+                stringBuilder.append("]");
+                return stringBuilder.toString();
+            } else if (value instanceof Map) {
+                StringBuilder stringBuilder = new StringBuilder("{ ");
+                Map<String, BencodeValue> map = this.getMap();
+                for (String keys : map.keySet()) {
+                    stringBuilder.append(keys + ":" + map.get(keys).toString() + '\n');
+                }
+                stringBuilder.append('}' );
+                return stringBuilder.toString();
+            } else
+                return "";
+        }
+        catch (BencodeFormatException e)
+        {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
 }

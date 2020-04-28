@@ -22,11 +22,9 @@ public class Peer {
 
 
     //Generate handhake
-
     public synchronized static byte[] handshake(Tracker track){
         byte[] handshake = new byte[68];
         int currPos = 0;
-
         handshake[currPos] = 0x13;
 
         //add the stirng "BitTorrent protocol"
@@ -41,25 +39,26 @@ public class Peer {
         }
 
         //info hash
-        System.arraycopy(track.infohash, 0, handshake, currPos, track.infoHash.length);
-        currPos += track.infoHash.length;
+        String infoHash=track.getInfoHash();
+        String peerId=track.getPeerId();
+
+
+
+        //public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
+        System.arraycopy(infoHash, 0, handshake, currPos, infoHash.length());
+        currPos += infoHash.length();
 
         //peer id
-        System.arraycopy(track.peerId, 0, handshake, currPos,track.peerId.length);
+
+        System.arraycopy(peerId, 0, handshake, currPos,peerId.length());
 
         return handshake;
     }
 
-    public boolean chackHandhshake(byte[] info, byte[] response) throws IOException {
+    public boolean checkHandhshake(byte[] info, byte[] response) throws IOException {
         byte[] peerHash = new byte[20];
         System.arraycopy(response, 28, peerHash, 0, 20);
-
-        if(!Arrays.equals(peerHash, info))
-        {
-            return false;
-        }
-
-        return true;
+        return Arrays.equals(peerHash, info);
     }
 
     //connect to a peer
@@ -72,8 +71,10 @@ public class Peer {
             System.out.println(sock.isConnected());
             in = new DataInputStream(sock.getInputStream());
             System.out.println(in);
+            //this is put only for the purposes of testing, needs to be resolved still
+            byte [] input = new byte[20];
 
-            if(chackHandhshake(track.infoHash, input == false))
+            if(!checkHandhshake(track.getInfoHash().getBytes(), input))
                 return false;
             out = new DataOutputStream((sock.getOutputStream()));
             out.write(handshake);
@@ -85,6 +86,5 @@ public class Peer {
             return false;
         }
     }
-
 
 }

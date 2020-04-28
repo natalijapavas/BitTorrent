@@ -1,12 +1,8 @@
 package com.company.Bencoding;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.EOFException;
+import java.io.*;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.ByteBuffer;
+import java.util.*;
 
 /** BencodeDecoder class does does the decoding of the bencoded data into usable form, which are Java objects to be
  * used for future tasks.
@@ -30,6 +26,7 @@ public class BencodeDecoder {
     public BencodeDecoder(InputStream in)
     {
         this.in = in;
+
     }
 
     /**
@@ -52,7 +49,6 @@ public class BencodeDecoder {
         if (this.getNextIndicator() == -1)
             return null;
         //depending on the possible value of indicator, we decode into an appropriate Object
-        //Changed from switch because of efficiency reasons
         if (this.indicator >= '0' && this.indicator <= '9')
             return this.decodeBytes();
         else if (this.indicator == 'i')
@@ -108,8 +104,9 @@ public class BencodeDecoder {
         c = this.read();
         if (c == '0') {
             c = this.read();
-            if (c == 'e')
+            if (c == 'e') {
                 return new BencodeValue(BigInteger.ZERO);
+            }
             else
                 throw new BencodeFormatException("Number ends with an 'e', not '" + (char)c + "'");
         }
@@ -142,7 +139,6 @@ public class BencodeDecoder {
 
         if (c != 'e')
             throw new BencodeFormatException("Integer should end with 'e'");
-
         String s = new String(chars, 0, off);
         return new BencodeValue(new BigInteger(s));
     }
@@ -181,7 +177,7 @@ public class BencodeDecoder {
         }
         this.indicator = 0;
 
-        Map<String, BencodeValue> result = new HashMap<String, BencodeValue>();
+        Map<String, BencodeValue> result = new LinkedHashMap<String, BencodeValue>();
         c = this.getNextIndicator();
         while (c != 'e') {
             // Dictionary keys are always strings.
