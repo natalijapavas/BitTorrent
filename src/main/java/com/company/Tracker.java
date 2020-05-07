@@ -8,6 +8,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 /*Todo verovatno treba recovery code u slucaju da URL konekcija ne uspe */
+/*Todo: Announce list extension
+https://web.archive.org/web/20200225211151/http://www.bittorrent.org/beps/bep_0012.html
+ */
 
 public class Tracker {
     private MetaInfoFile metaInfoFile;
@@ -53,13 +56,13 @@ public class Tracker {
 
 
     private String generatePeerId() //mozda ne treba kao hex?
-{
+    {
     Random randomGenerator=new Random(System.currentTimeMillis());
     byte[] bytes=new byte[20];
     randomGenerator.nextBytes(bytes);
     System.out.println("Velicina id- a je: "+bytes.length);
     return new String(bytes,StandardCharsets.UTF_8);
-}
+    }
 
 
     //Subject to change, following info hash problem resolution

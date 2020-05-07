@@ -1,0 +1,14 @@
+com/company/Main.class
+com/company/Bencoding/BencodeValue.class
+com/company/Bencoding/BencodeDecoder.class
+com/company/Message$Have.class
+com/company/Peer.class
+com/company/Message$Bitfield.class
+com/company/PeerInfo.class
+com/company/Message$Piece.class
+com/company/Tracker.class
+com/company/Message$Request.class
+com/company/MetaInfoFile.class
+com/company/Message.class
+com/company/Bencoding/BencodeFormatException.class
+com/company/Bencoding/BencodeEncoder.class

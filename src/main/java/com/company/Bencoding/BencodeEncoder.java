@@ -42,6 +42,7 @@ public class BencodeEncoder {
         }
         else if (encodedObject instanceof Map) {
             encodeMap((LinkedHashMap<String,BencodeValue>) encodedObject);
+            //encodeMap((Map<String,BencodeValue>) encodedObject);
         }
         else {
             throw new IllegalArgumentException("Cannot bencode: " +
@@ -97,6 +98,7 @@ public class BencodeEncoder {
         this.outputStream.write('e');
     }
 
+    //private void encodeMap(Map<String,BencodeValue> map) throws IOException
     private void encodeMap(LinkedHashMap<String,BencodeValue> map) throws IOException {
 
         this.outputStream.write('d');
@@ -104,7 +106,7 @@ public class BencodeEncoder {
         Set<String> keySet = map.keySet();
         for (String key : keySet) {
             BencodeValue value = map.get(key);
-            new BencodeEncoder(this.outputStream).encode(value);
+            new BencodeEncoder(this.outputStream).encode(key);
             new BencodeEncoder(this.outputStream).encode(value);
         }
         this.outputStream.write('e');

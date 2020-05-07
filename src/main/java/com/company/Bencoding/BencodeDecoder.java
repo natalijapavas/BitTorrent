@@ -1,7 +1,6 @@
 package com.company.Bencoding;
 import java.io.*;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 import java.util.*;
 
 /** BencodeDecoder class does does the decoding of the bencoded data into usable form, which are Java objects to be
@@ -26,7 +25,6 @@ public class BencodeDecoder {
     public BencodeDecoder(InputStream in)
     {
         this.in = in;
-
     }
 
     /**

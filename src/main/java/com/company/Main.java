@@ -1,20 +1,24 @@
 package com.company;
+import com.company.Bencoding.BencodeDecoder;
 import com.company.Bencoding.BencodeEncoder;
 import com.company.Bencoding.BencodeValue;
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
+
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
+import java.util.*;
 
 
 /*Reading torrent tests performed on local machine
-/*TODO extract SHA-1 hashed parts from the file */
+/*TODO Testirati HTTP slanje i response, eventualno razmotriti da li napisati jedan objekat koji bi sadrzao respnse u sebi*/
 public class Main {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
         //Linkovi za Testiranje
         //String path="/home/korisnik/Desktop/torrents/KNOPPIX_V7.7.1DVD-2016-10-22-EN.torrent";
-        String path="/home/korisnik/Desktop/torrents/bunny.torrent";
+        //String path="/home/korisnik/Desktop/torrents/bunny.torrent";
         //String path="/home/korisnik/Desktop/torrents/alice.torrent";
-        //String path="/home/korisnik/Desktop/torrents/sintel.torrent";
+        String path="/home/korisnik/Desktop/torrents/sintel.torrent";
         //String path="/home/korisnik/Desktop/torrents/tears-of-steel.torrent";
         //String path="/home/korisnik/Desktop/torrents/cosmos-laundromat.torrent";
 
@@ -52,6 +56,7 @@ public class Main {
         encoder.encode(arrayList);
         System.out.println("Test list:"+ outputStream.toString("UTF-8"));
         outputStream.close();
+
         System.out.println("***************************Bencode testing uspesan!****************************************\n");
 
         System.out.println("************************* Let the Hunger Games begin ****************************************");
@@ -60,14 +65,13 @@ public class Main {
             inputStream = new FileInputStream(torrentFile);
             MetaInfoFile document=new MetaInfoFile();
             document.readFileContent(inputStream);
-            System.out.println("Key set: ");
+            System.out.println("Info Key set: ");
             for(String key:document.getInfoMap().keySet())
             {
                 System.out.println(key);
             }
-            System.out.println("Printing contents of info dict: ");
+            System.out.println(document.getInfoMap().get("profiles"));
 
-            System.out.println("Info map bencoded");
             System.out.println("Info hash novi je: "+document.getInfoHashHex());
             Tracker tracker=new Tracker(document);
             System.out.println("************************************Testing http tracker requests***************************");
