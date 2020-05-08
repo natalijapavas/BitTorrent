@@ -3,9 +3,7 @@ import com.company.Bencoding.BencodeDecoder;
 import com.company.Bencoding.BencodeEncoder;
 import com.company.Bencoding.BencodeValue;
 import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
@@ -15,10 +13,11 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
         //Linkovi za Testiranje
-        //String path="/home/korisnik/Desktop/torrents/KNOPPIX_V7.7.1DVD-2016-10-22-EN.torrent";
+        String path="/home/korisnik/Desktop/torrents/KNOPPIX_V7.7.1DVD-2016-10-22-EN.torrent";
         //String path="/home/korisnik/Desktop/torrents/bunny.torrent";
         //String path="/home/korisnik/Desktop/torrents/alice.torrent";
-        String path="/home/korisnik/Desktop/torrents/sintel.torrent";
+        //String path="/home/korisnik/Desktop/torrents/leaves.torrent";
+        //String path="/home/korisnik/Desktop/torrents/sintel.torrent";
         //String path="/home/korisnik/Desktop/torrents/tears-of-steel.torrent";
         //String path="/home/korisnik/Desktop/torrents/cosmos-laundromat.torrent";
 
@@ -66,17 +65,22 @@ public class Main {
             MetaInfoFile document=new MetaInfoFile();
             document.readFileContent(inputStream);
             System.out.println("Info Key set: ");
-            for(String key:document.getInfoMap().keySet())
-            {
+            for(String key:document.getInfoMap().keySet()) {
                 System.out.println(key);
             }
-            System.out.println(document.getInfoMap().get("profiles"));
 
-            System.out.println("Info hash novi je: "+document.getInfoHashHex());
+            System.out.println("Info hash is: "+document.getInfoHashHex());
             Tracker tracker=new Tracker(document);
             System.out.println("************************************Testing http tracker requests***************************");
-            BencodeValue bencodeVHttpResponse=tracker.sendHTTPAnnounceRequest();
-            System.out.println("Response type: "+bencodeVHttpResponse.getValueType());
+            BencodeValue bencodeHttpResponse=tracker.sendHTTPAnnounceRequest();
+            Map<String,BencodeValue> bencodeMap=bencodeHttpResponse.getMap();
+            for (Map.Entry e :bencodeMap.entrySet())
+            {
+                System.out.println((String)e.getKey());
+                BencodeValue value=(BencodeValue)e.getValue();
+                System.out.println(value.getString());
+            }
+            System.out.println("Response type: "+bencodeHttpResponse.getValueType());
 
         } catch (IOException e) {
             e.printStackTrace();

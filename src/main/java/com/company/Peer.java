@@ -40,7 +40,8 @@ public class Peer {
 
         //info hash
         String infoHash=track.getInfoHash();
-        String peerId=track.getPeerId();
+        byte[] peerId=track.getPeerId(); //change 1
+
 
 
         //public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
@@ -49,7 +50,7 @@ public class Peer {
 
         //peer id
 
-        System.arraycopy(peerId, 0, handshake, currPos,peerId.length());
+        System.arraycopy(peerId, 0, handshake, currPos,peerId.length); //change2
 
         return handshake;
     }

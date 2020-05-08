@@ -18,13 +18,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-/*TODO add methods for extracting fields in single and multiple file mode */
+/*TODO Handling of multiple file mod to be done */
 
 
 public class MetaInfoFile {
     private Map<String, BencodeValue> fileContent;
     private char fileMode='n'; //s for single file, m for multiple, n for none
-    private byte[] infohHash;
+    private byte[] infoHash;
     private String infoHashHex;
 
 
@@ -51,12 +51,9 @@ public class MetaInfoFile {
             encoder.encode(entry.getValue());
         }
         outputStream.write('e');
-        File fileTest=new File("/home/korisnik/Desktop/torrents/test.txt");
-        FileOutputStream fileTestOutput=new FileOutputStream(fileTest);
-        fileTestOutput.write(outputStream.toByteArray());
-        fileTestOutput.close();
-        this.infohHash =sha1.digest(outputStream.toByteArray());
-        this.infoHashHex=javax.xml.bind.DatatypeConverter.printHexBinary(infohHash);
+        this.infoHash =sha1.digest(outputStream.toByteArray());
+        this.infoHashHex=javax.xml.bind.DatatypeConverter.printHexBinary(infoHash);
+        outputStream.close();
     }
 
     public String getInfoHashHex() {
@@ -64,7 +61,7 @@ public class MetaInfoFile {
     }
 
     public byte[] getInfoHash() {
-        return infohHash;
+        return infoHash;
     }
 
     public Map<String, BencodeValue> getFileContent() {
@@ -153,7 +150,6 @@ public class MetaInfoFile {
         return infoMap.get("length").getInt();
     }
 
-    //Depending on tracker, this may or may not be changed
     public BencodeValue getFiles() throws BencodeFormatException
     {
         if(this.fileMode!='m')

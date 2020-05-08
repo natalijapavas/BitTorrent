@@ -4,6 +4,7 @@ import com.company.Bencoding.BencodeFormatException;
 import com.company.Bencoding.BencodeValue;
 import java.io.*;
 import java.net.*;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
@@ -14,9 +15,9 @@ https://web.archive.org/web/20200225211151/http://www.bittorrent.org/beps/bep_00
 
 public class Tracker {
     private MetaInfoFile metaInfoFile;
-    private String peerId;
+    private byte[] peerId;
 
-    public Tracker(MetaInfoFile metaInfoFile) {
+    public Tracker(MetaInfoFile metaInfoFile) throws IOException {
         this.metaInfoFile=metaInfoFile;
         this.peerId=generatePeerId();
     }
@@ -32,13 +33,16 @@ public class Tracker {
     {
         BencodeValue response=null;
         try {
-            String query=this.generateQuery(); //GET request parameters
-            if(query==null)
+            String urlString=this.generateAddress(); //GET request parameters
+            if(urlString==null)
                 return null; //Add exceptions and recovery code maybe
-            StringBuffer urlString=new StringBuffer(this.metaInfoFile.getAnnounce());
-            urlString.append(query);
+
+            System.out.println("Url string to which request is sent:"+ urlString);
             URL url=new URL(urlString.toString());
             HttpURLConnection connection=(HttpURLConnection)url.openConnection();
+            connection.setRequestMethod("GET");
+            int responseCode=connection.getResponseCode();
+            System.out.println("Response code is: "+responseCode);
             response=new BencodeDecoder(connection.getInputStream()).decode();
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -50,23 +54,31 @@ public class Tracker {
         return response;
     }
 
-    public String getPeerId() {
+    public byte[] getPeerId() {
         return peerId;
     }
 
 
-    private String generatePeerId() //mozda ne treba kao hex?
+    private byte[] generatePeerId() throws IOException //mozda ne treba kao hex?
     {
+        final int ID_SIZE=20;
+        final int RANDOM_ARRAY_SIZE=16;
     Random randomGenerator=new Random(System.currentTimeMillis());
-    byte[] bytes=new byte[20];
-    randomGenerator.nextBytes(bytes);
-    System.out.println("Velicina id- a je: "+bytes.length);
-    return new String(bytes,StandardCharsets.UTF_8);
+    ByteArrayOutputStream byteBuffer=new ByteArrayOutputStream(ID_SIZE);
+    byteBuffer.write('-');
+    byteBuffer.write('N');
+    byteBuffer.write('D');
+    byteBuffer.write('-');
+    byte[] randomBytes=new byte[RANDOM_ARRAY_SIZE];
+    randomGenerator.nextBytes(randomBytes);
+    byteBuffer.write(randomBytes);
+    return byteBuffer.toByteArray();
+    //return bytes;
     }
 
 
     //Subject to change, following info hash problem resolution
-    private String generateQuery() throws BencodeFormatException, UnknownHostException, UnsupportedEncodingException {
+    private String generateAddress() throws BencodeFormatException, UnknownHostException, UnsupportedEncodingException {
         StringBuffer strBuffer=new StringBuffer(metaInfoFile.getAnnounce());
         int portNum=generatePortNumber();
         if(portNum==-1)
@@ -75,13 +87,16 @@ public class Tracker {
 
         strBuffer.append(URLEncoder.encode("info_hash", "UTF-8"));
         strBuffer.append("=");
-        String hash=new String(this.metaInfoFile.getInfoHash(), StandardCharsets.UTF_8);
-        strBuffer.append(URLEncoder.encode(hash, "UTF-8"));
+        //String hash=new String(this.metaInfoFile.getInfoHash(), StandardCharsets.UTF_8);
+        //strBuffer.append(URLEncoder.encode(hash, "UTF-8"));
+        strBuffer.append(urlEncode(this.metaInfoFile.getInfoHash()));
 
         strBuffer.append('&');
-        strBuffer.append(URLEncoder.encode("peer_id=", "UTF-8"));
+        strBuffer.append(URLEncoder.encode("peer_id", "UTF-8"));
         strBuffer.append('=');
-        strBuffer.append(URLEncoder.encode(this.peerId,"UTF-8"));
+        System.out.println("Velicina peer id-a u generate Address je: "+this.peerId.length);
+        System.out.println(this.peerId);
+        strBuffer.append(urlEncode(this.peerId));
 
         strBuffer.append('&');
         strBuffer.append("ip");
@@ -94,6 +109,11 @@ public class Tracker {
         strBuffer.append(URLEncoder.encode(new Integer(portNum).toString(), "UTF-8"));
 
         strBuffer.append('&');
+        strBuffer.append(URLEncoder.encode("uploaded", "UTF-8"));
+        strBuffer.append('=');
+        strBuffer.append(URLEncoder.encode("0", "UTF-8")); //uploaded
+
+        strBuffer.append('&');
         strBuffer.append(URLEncoder.encode("downloaded", "UTF-8"));
         strBuffer.append('=');
         strBuffer.append(URLEncoder.encode("0", "UTF-8")); //downloaded
@@ -101,14 +121,38 @@ public class Tracker {
         strBuffer.append('&');
         strBuffer.append(URLEncoder.encode("left", "UTF-8"));
         strBuffer.append('=');
-        strBuffer.append(URLEncoder.encode(Integer.toString(this.metaInfoFile.getFileLength()), "UTF-8")); //left
+        strBuffer.append(URLEncoder.encode(Integer.toString(this.metaInfoFile.getFileLength()), "UTF-8")); //left to download
+
+        strBuffer.append('&');
+        strBuffer.append(URLEncoder.encode("compact", "UTF-8"));
+        strBuffer.append('=');
+        strBuffer.append(URLEncoder.encode("0", "UTF-8"));
+
+        strBuffer.append('&');
+        strBuffer.append(URLEncoder.encode("no_peer_id", "UTF-8"));
+        strBuffer.append('=');
+        strBuffer.append(URLEncoder.encode("0", "UTF-8"));
 
         strBuffer.append('&');
         strBuffer.append(URLEncoder.encode("event", "UTF-8"));
         strBuffer.append('=');
         strBuffer.append(URLEncoder.encode("started", "UTF-8"));
-
         return strBuffer.toString();
+    }
+
+
+    private static String urlEncode(byte[] binary) {
+        if (binary == null) {
+            return null;
+        }
+        try { // we use a base encoding that accepts all byte values
+            return URLEncoder.encode(new String(binary, "ISO8859_1"), "ISO8859_1");
+        } catch (UnsupportedEncodingException e) {
+            // this cannot happen with ISO8859_1 = Latin1
+            e.printStackTrace();
+            return null;
+
+        }
     }
     /** Returns one of the standard port numbers for bittorrent protocol, or -1 if not available
      *
