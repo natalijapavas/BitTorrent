@@ -4,7 +4,6 @@ import com.company.Bencoding.BencodeFormatException;
 import com.company.Bencoding.BencodeValue;
 import java.io.*;
 import java.net.*;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
@@ -44,6 +43,10 @@ public class Tracker {
             int responseCode=connection.getResponseCode();
             System.out.println("Response code is: "+responseCode);
             response=new BencodeDecoder(connection.getInputStream()).decode();
+            if (response.getMap().keySet().contains((String) "failure reasone"))
+            {
+                System.out.println("Error occured");
+            }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (BencodeFormatException e) {
@@ -140,6 +143,9 @@ public class Tracker {
         return strBuffer.toString();
     }
 
+    public MetaInfoFile getMetaInfoFile() {
+        return metaInfoFile;
+    }
 
     private static String urlEncode(byte[] binary) {
         if (binary == null) {
