@@ -11,9 +11,13 @@ public class PeerInfo {
     String name;
     String ip;
 
-    boolean chockingPeer = true;
-    boolean peerChocking = true;
-    boolean interested = false;
+    //All connections start off as 'Not interested' and 'Chocked'
+
+    private boolean chockingPeer = true;
+    private boolean peerChocking = true;
+
+
+    private boolean interested = false;
     boolean peerInterested = false;
 
     byte[] bitfield;
@@ -81,6 +85,13 @@ public class PeerInfo {
         this.peerChocking = peerChocking;
     }
 
+    public boolean isInterested(){ return interested; }
+
+    public void setInterested(boolean interested){ this.interested = interested;}
+
+    public boolean isPeerInterested(){ return peerInterested; }
+
+    public void setPeerInterested(boolean peerInterested){ this.peerInterested = peerInterested; }
     public byte[] getBitfield(){
         return bitfield;
     }
