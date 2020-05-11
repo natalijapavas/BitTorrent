@@ -116,8 +116,7 @@ The combination of these two fields identifies each kind of message :
 
 So every message starts with a 4-byte length prefix followed by a single byte message id, followed by a payload that differs depending on a message.
 
-Because of different size of payloads we will define different payloads.
-Interested, uninterested,chocked and unchocked messages don't have a payload.
+
 
  
  *Taken from: http://pages.di.unipi.it/ricci/jBittorrentAPI_report.pdf,
