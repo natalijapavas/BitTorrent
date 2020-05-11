@@ -18,27 +18,27 @@ public class PeerInfo {
 
 
     private boolean interested = false;
-    boolean peerInterested = false;
+    private boolean peerInterested = false;
 
-    byte[] bitfield;
+    private byte[] peerId;
 
-    DataInputStream in = null;
-    DataOutputStream out = null;
+    private DataInputStream in = null;
+    private DataOutputStream out = null;
 
-    boolean handshake = false;
+    private boolean handshake = false;
 
-    boolean[] hasPiece;
+    private boolean[] hasPiece;
 
-    int currentPieceIndex = -1;
-    RandomAccessFile thefile;
+    private int currentPieceIndex = -1;
+    private RandomAccessFile thefile;
 
-    Tracker track;
-    public int downloaded = 0;
-    int uploaded = 0;
+    private Tracker track;
+    private int downloaded = 0;
+    private int uploaded = 0;
 
-    boolean badPeer = false;
-    boolean bad;
-    Socket userSocket;
+    private boolean badPeer = false;
+    private boolean bad;
+    private Socket userSocket;
 
     PeerInfo(String name, int port, String ip, RandomAccessFile thefile, Tracker track){
         this.name = name;
@@ -92,12 +92,13 @@ public class PeerInfo {
     public boolean isPeerInterested(){ return peerInterested; }
 
     public void setPeerInterested(boolean peerInterested){ this.peerInterested = peerInterested; }
-    public byte[] getBitfield(){
-        return bitfield;
+
+    public byte[] getPeerId(){
+        return peerId;
     }
 
-    public void setBitfield(byte[] bitfield){
-        this.bitfield = bitfield;
+    public void setPeerId(byte[] peerId){
+        this.peerId = peerId;
 
     }
 
@@ -148,4 +149,8 @@ public class PeerInfo {
     public void setCurrentPieceIndex(int currentPieceIndex){
         this.currentPieceIndex = currentPieceIndex;
     }
+
+    public RandomAccessFile getThefile(){ return thefile;}
+
+    public Tracker getTracker(){return track;}
 }
