@@ -56,6 +56,23 @@ public class Peer {
         return handshake;
     }
 
+    public boolean checkBitfield(boolean[] otherBitfield)
+    {
+
+        if(this.bitfield.length!=otherBitfield.length)
+        {
+            System.out.println("Fatal error: Bitfield lengths are unequal");
+            return false;
+        }
+        for(int i=0;i<this.bitfield.length;i++)
+        {
+            if(this.bitfield[i]!=otherBitfield[i])
+                return false;
+        }
+        return true;
+    }
+
+
     public boolean checkHandhshake(byte[] info, byte[] response) throws IOException {
         byte[] peerHash = new byte[20];
         System.arraycopy(response, 28, peerHash, 0, 20);
@@ -79,7 +96,8 @@ public class Peer {
                 return false;
             out = new DataOutputStream((sock.getOutputStream()));
             out.write(handshake);
-            peerInfo.handshake = true;
+            //peerInfo.hanshake=true;
+            peerInfo.setHandshake(true);
             out.flush();
             return true;
         } catch(IOException e){

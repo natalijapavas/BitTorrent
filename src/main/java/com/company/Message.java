@@ -1,7 +1,5 @@
 package com.company;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-
 import java.io.*;
 import java.io.DataOutputStream;
 
@@ -59,7 +57,7 @@ public class Message {
 
 
     //encode payload:
-    public void ePayload(DataOutputStream dos) throws IOException{
+    public void encodePayload(DataOutputStream dos) throws IOException{
         return;
     }
 
@@ -77,7 +75,7 @@ public class Message {
             return this.i;
         }
 
-        public void ePayload(DataOutputStream output) throws IOException {
+        public void encodePayload(DataOutputStream output) throws IOException {
             output.write(this.i);
         }
     }
@@ -95,7 +93,7 @@ public class Message {
             return this.bitfield;
         }
 
-        public void ePayload(DataOutputStream output) throws IOException {
+        public void encodePayload(DataOutputStream output) throws IOException {
             output.write(this.bitfield);
 
         }
@@ -115,6 +113,11 @@ public class Message {
             this.block = block;
 
         }
+        public void encodePayload(DataOutputStream output) throws IOException {
+            output.writeInt(this.ind);
+            output.writeInt(this.start);
+            output.write(this.block);
+        }
     }
 
     //request: <len=0013><id=6><index><begin><length>
@@ -130,7 +133,7 @@ public class Message {
             this.len = length;
         }
 
-        public void ePayload(DataOutputStream output) throws IOException {
+        public void encodePayload(DataOutputStream output) throws IOException {
             output.writeInt(this.ind);
             output.writeInt(this.start);
             output.writeInt(this.len);
@@ -152,7 +155,7 @@ public class Message {
 
         }
 
-        public void ePayload(DataOutputStream output) throws IOException {
+        public void encodePayload(DataOutputStream output) throws IOException {
             output.writeInt(this.ind);
             output.writeInt(this.start);
             output.writeInt(this.clength);
@@ -167,6 +170,10 @@ public class Message {
         public Port(final int port){
             super(3,portID);
             this.port = port;
+        }
+
+        public void encodePayload(DataOutputStream output) throws IOException {
+            output.writeInt(this.port);
         }
     }
 
@@ -220,7 +227,7 @@ public class Message {
         return null;
     }
 
-    public static void encode(final Message message,final OutputStream output) throws IOException{
+    public static void encode(final Message message, final OutputStream output) throws IOException{
         DataOutputStream dos = null;
         if(message != null){
             {
@@ -228,17 +235,25 @@ public class Message {
                 dos.writeInt(message.length);
                 if(message.length > 0){
                     dos.write(message.id);
-                    message.ePayload(dos);
+                    message.encodePayload(dos);
                 }
                 dos.flush();
             }
         }
     }
 
-    public Message parse(Message message, Peer peer) {
+    public Message parse(Message message, Peer peer) throws IOException{
         byte id;
 
-        //keep-allive is a message with zero bytes - length prefix = 0
+        int numOfPieces;
+        int pieceLength = peer.peerInfo.getTracker().getMetaInfoFile().getPieceLength();
+        int fileLength = peer.peerInfo.getTracker().getMetaInfoFile().getFileLength();
+        if(fileLength%pieceLength != 0)
+            numOfPieces = fileLength / pieceLength + 1;
+        else
+            numOfPieces = fileLength / pieceLength;
+
+        //keep-alive is a message with zero bytes - length prefix = 0
         if (message.length == 0)
             id = keepAliveID;
         else id = message.id;
@@ -272,19 +287,20 @@ public class Message {
                 return null;
 
             case (bitfieldID):
-                Bitfield bfield = (Bitfield) message;
-                peer.peerInfo.bitfield = bfield.getBitfield();
-                /*boolean[] haspiece1 = new boolean[peer.peerInfo.track.getNumPieces];
+                Bitfield bitfield = (Bitfield) message;
+                peer.peerInfo.setPeerId(bitfield.getBitfield());
+
+                boolean[] haspiece1 = new boolean[numOfPieces];
+                byte b = 0;
                 peer.peerInfo.setHasPiece(haspiece1);
-                for (int i = 0; i < peer.peerInfo.track.getNumPieces; i++){
-                    int j = i;
-                    int k = 0;
-                    byte b = 0;
-                    while (j>=8) {
-                        j-=8;
-                        k++;
-                    }
-                    b = (byte) (peer.peerInfo.bitfield[k] << j);
+                for (int i = 0; i < numOfPieces; i++){
+                    int j = i; //beacuse i must stay unchanged
+                    int k = 0; //place of a curr piece
+                    //we want to find a place of each peace
+                    //8 bits -> 1 byte
+                    k = (int) Math.ceil(j/8); //check math?
+                    j = j % 8;
+                    b = (byte) (peer.peerInfo.getPeerId()[k] << j); //left shift
 
 
                     if (b < 0){
@@ -295,28 +311,39 @@ public class Message {
                         haspiece1[i] = false;
                         peer.peerInfo.setHasPiece(haspiece1);
                     }
-                }*/
+                }
+                if(peer.checkBitfield(peer.bitfield))
+                    return new Message(1,interestedID);
+                else
+                    return new Message(1, uniterestedID);
 
             case (pieceID):
-                Piece pieceMsg=(Piece) message;
-                //DataBlock dataBlock=new DataBlock(pieceMsg.index);
-                //upisi u svoj store bitfield-ova da imas ovaj deo
-                //mora da se proveri da imam ceo Piece, ako ga imam onda moze da se posalje Have
-                return new Have(pieceMsg.ind);
-
-
-
+                Piece piece = (Piece) message;
+                if(piece.start > 0) //this means that peer has a piece
+                    return new Have(piece.ind);
+                else
+                    return null;
             case (requestID):
-                Request request=(Request) message;
-                //proveri da li imamo piece (Download Manager)
-                //return new Piece(request.ind,request.start,);
+                Request req = (Request) message;
+                //we are trying to find a piece of index req.ind*pieceLength + req.start
+                peer.peerInfo.getThefile().seek(pieceLength*req.ind + req.start);
+
+                byte[] ourPiece = new byte[req.length];
+                //we are reading that piece
+                peer.peerInfo.getThefile().readFully(ourPiece);
+
+                //ADD HERE UPLOADING AND DOWNLOADING REQUESTED PIECES
+
+
+                return new Piece(req.ind,req.start,ourPiece);
 
             case (cancelID):
-                //Still can't be implemented, because we lack class for storing data blocks, and a way to store pieces
+                return null;
 
-
+            default:
+                throw new IllegalStateException("Unexpected value: " + id);
         }
-        return null;
+        //return null;
 
     }
 
