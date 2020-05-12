@@ -8,7 +8,7 @@ import java.util.*;
 
 
 /*Reading torrent tests performed on local machine
-/*TODO Testirati HTTP slanje i response, eventualno razmotriti da li napisati jedan objekat koji bi sadrzao respnse u sebi*/
+/*TODO Razmotriti da li napisati jedan objekat koji bi sadrzao respnse u sebi*/
 public class Main {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
         //Linkovi za Testiranje
@@ -58,9 +58,9 @@ public class Main {
         System.out.println("***************************Bencode testing uspesan!****************************************\n");
 
         System.out.println("************************* Let the Hunger Games begin ****************************************");
-        FileInputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(torrentFile);
+
+        try (FileInputStream inputStream = new FileInputStream(torrentFile))
+        {
             MetaInfoFile document=new MetaInfoFile();
             document.readFileContent(inputStream);
             System.out.println("Info Key set: ");
@@ -80,6 +80,7 @@ public class Main {
                 System.out.println(value.getString());
             } */
             System.out.println("Response type: "+bencodeHttpResponse.getValueType());
+
 
         } catch (IOException e) {
             e.printStackTrace();

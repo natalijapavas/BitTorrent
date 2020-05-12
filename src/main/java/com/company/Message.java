@@ -290,6 +290,7 @@ public class Message {
                 Bitfield bitfield = (Bitfield) message;
                 peer.peerInfo.setPeerId(bitfield.getBitfield());
 
+
                 boolean[] haspiece1 = new boolean[numOfPieces];
                 byte b = 0;
                 peer.peerInfo.setHasPiece(haspiece1);
@@ -312,7 +313,7 @@ public class Message {
                         peer.peerInfo.setHasPiece(haspiece1);
                     }
                 }
-                if(peer.checkBitfield(peer.bitfield))
+                if(peer.checkBitfield(bitfield.bitfield))
                     return new Message(1,interestedID);
                 else
                     return new Message(1, uniterestedID);

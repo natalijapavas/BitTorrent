@@ -9,6 +9,19 @@ package com.company;
 
 public class DownloadManager {
     private byte[] bitfield;
+    private PeerInfo peerClient;
+
+    public DownloadManager(PeerInfo peerClient, byte [] bitfield)
+    {
+        this.bitfield=bitfield;
+        this.peerClient=peerClient;
+    }
+
+    public DownloadManager(PeerInfo peerClient)
+    {
+        this.peerClient=peerClient;
+    }
+
 
 
     public byte[] getBitfield() {
