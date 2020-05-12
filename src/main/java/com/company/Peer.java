@@ -21,6 +21,7 @@ public class Peer {
     }
 
 
+
     //Generate handhake
     public synchronized static byte[] handshake(Tracker track){
         byte[] handshake = new byte[68];
@@ -62,7 +63,7 @@ public class Peer {
     }
 
     //connect to a peer
-    public synchronized boolean createSocket(Tracker track,String ip, int port) throws IOException{
+    public synchronized boolean createSocket(Tracker track, String ip, int port) throws IOException{
         Socket sock = null;
         System.out.println("create");
         try{

@@ -73,12 +73,12 @@ public class Main {
             System.out.println("************************************Testing http tracker requests***************************");
             BencodeValue bencodeHttpResponse=tracker.sendHTTPAnnounceRequest();
             Map<String,BencodeValue> bencodeMap=bencodeHttpResponse.getMap();
-            for (Map.Entry e :bencodeMap.entrySet())
+            /*for (Map.Entry e :bencodeMap.entrySet())
             {
                 System.out.println((String)e.getKey());
                 BencodeValue value=(BencodeValue)e.getValue();
                 System.out.println(value.getString());
-            }
+            } */
             System.out.println("Response type: "+bencodeHttpResponse.getValueType());
 
         } catch (IOException e) {

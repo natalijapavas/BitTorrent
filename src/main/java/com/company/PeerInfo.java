@@ -11,7 +11,7 @@ public class PeerInfo {
     String name;
     String ip;
 
-    //All connections start off as 'Not interested' and 'Chocked'
+    //All connections start off as 'Not interested' and 'Choked'
 
     private boolean chockingPeer = true;
     private boolean peerChocking = true;

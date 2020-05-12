@@ -6,6 +6,8 @@ import java.io.*;
 import java.io.DataOutputStream;
 
 public class Message {
+
+    //ByteOutputStream out;
     private static final byte keepAliveID = -1;
 
     //chocke = peer will not send the file until peer unchokes
@@ -29,7 +31,7 @@ public class Message {
     private static final Message UNINTERESTED = new Message(1, uniterestedID);
 
     //We have 4 different types of payload:
-    //Interested,notinterested,chocked and unchocked don't have a payload
+    //Interested,not interested,choked and unchoked don't have a payload
     //Have has a piece index which is a 4-byte payload -- smallPayload
     //Bitfield also has a variable-length payload - smallPayloadBitfield
     //Request has a payload that contains:
@@ -47,11 +49,11 @@ public class Message {
     protected final int length;
     public Message(final int length, final byte id){
 
+
         this.id = id;
         this.length = length;
 
         //initializing our payloads
-
     }
 
 
@@ -77,7 +79,6 @@ public class Message {
 
         public void ePayload(DataOutputStream output) throws IOException {
             output.write(this.i);
-
         }
     }
 
@@ -155,7 +156,6 @@ public class Message {
             output.writeInt(this.ind);
             output.writeInt(this.start);
             output.writeInt(this.clength);
-
         }
 
     }
@@ -185,7 +185,7 @@ public class Message {
                 return CHOKE;
 
             case(unchokeID):
-                System.out.println("Unchocke!");
+                System.out.println("Unchoke!");
                 return UNCHOKE;
 
             case(interestedID):
@@ -298,10 +298,22 @@ public class Message {
                 }*/
 
             case (pieceID):
+                Piece pieceMsg=(Piece) message;
+                //DataBlock dataBlock=new DataBlock(pieceMsg.index);
+                //upisi u svoj store bitfield-ova da imas ovaj deo
+                //mora da se proveri da imam ceo Piece, ako ga imam onda moze da se posalje Have
+                return new Have(pieceMsg.ind);
+
+
 
             case (requestID):
+                Request request=(Request) message;
+                //proveri da li imamo piece (Download Manager)
+                //return new Piece(request.ind,request.start,);
 
             case (cancelID):
+                //Still can't be implemented, because we lack class for storing data blocks, and a way to store pieces
+
 
         }
         return null;
