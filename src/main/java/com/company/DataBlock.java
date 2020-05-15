@@ -21,6 +21,7 @@ public class DataBlock {
     private int start;
     private int size;
     private boolean isRequested;
+    private boolean isDownloaded;
 
 
     public DataBlock(int index,int start,byte[] block,int size)
@@ -29,6 +30,8 @@ public class DataBlock {
         this.start=start;
         this.block=block;
         this.size=size;
+        this.isRequested=false;
+        this.isDownloaded=false;
     }
 
     public DataBlock(int index,int start,byte[] block,int size,boolean isRequested)
@@ -40,9 +43,6 @@ public class DataBlock {
         this.isRequested=isRequested;
     }
 
-    public void setRequested(boolean requested) {
-        isRequested = requested;
-    }
 
     public boolean isRequested() {
         return isRequested;
@@ -63,4 +63,15 @@ public class DataBlock {
     public int getSize() {
         return size;
     }
+
+    public boolean isDownloaded() {
+        return isDownloaded;
+    }
+
+    public void setRequested(boolean requested) {
+        isRequested = requested;
+    }
+
+    public void setDownloaded(boolean isDownloaded) { this.isDownloaded=isDownloaded; }
+
 }

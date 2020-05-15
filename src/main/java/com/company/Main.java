@@ -1,5 +1,4 @@
 package com.company;
-import com.company.Bencoding.BencodeDecoder;
 import com.company.Bencoding.BencodeEncoder;
 import com.company.Bencoding.BencodeValue;
 import java.io.*;
@@ -7,8 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 
-/*Reading torrent tests performed on local machine
-/*TODO Razmotriti da li napisati jedan objekat koji bi sadrzao respnse u sebi*/
+/*Reading torrent tests performed on local machine */
+
 public class Main {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
         //Linkovi za Testiranje

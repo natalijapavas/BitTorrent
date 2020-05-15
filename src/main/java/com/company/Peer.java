@@ -9,7 +9,7 @@ public class Peer {
     DataOutputStream out = null;
     int downloaded = 0;
     boolean[] bitfield;
-    byte[] bfield;
+    byte[] bfield; //ili byte[] peerID;
     PeerInfo peerInfo;
     int pieces;
 
@@ -19,7 +19,6 @@ public class Peer {
         this.bfield = bfield;
         this.peerInfo = peerInfo;
     }
-
 
 
     //Generate handhake
@@ -58,18 +57,7 @@ public class Peer {
 
     public boolean checkBitfield(boolean[] otherBitfield)
     {
-
-        if(this.bitfield.length!=otherBitfield.length)
-        {
-            System.out.println("Fatal error: Bitfield lengths are unequal");
-            return false;
-        }
-        for(int i=0;i<this.bitfield.length;i++)
-        {
-            if(this.bitfield[i]!=otherBitfield[i])
-                return false;
-        }
-        return true;
+        return Arrays.equals(this.bitfield,otherBitfield);
     }
 
 

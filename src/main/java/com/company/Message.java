@@ -8,7 +8,7 @@ public class Message {
     //ByteOutputStream out;
     private static final byte keepAliveID = -1;
 
-    //chocke = peer will not send the file until peer unchokes
+    //choke = peer will not send the file until peer unchokes
     private static final byte chokeID = 0;
     private static final byte unchokeID = 1;
 
@@ -28,7 +28,7 @@ public class Message {
     private static final Message INTERESTED = new Message(1, interestedID);
     private static final Message UNINTERESTED = new Message(1, uniterestedID);
 
-    //We have 4 different types of payload:
+    /** We have 4 different types of payload:
     //Interested,not interested,choked and unchoked don't have a payload
     //Have has a piece index which is a 4-byte payload -- smallPayload
     //Bitfield also has a variable-length payload - smallPayloadBitfield
@@ -40,7 +40,7 @@ public class Message {
         //-index - 4-bytes
         //-begin - 4-byte offset (begining)
         //-block - variable length              -- bigPayloadPiece
-
+     */
 
 
     protected final byte id;
@@ -143,9 +143,9 @@ public class Message {
 
     //cancel: <len=0013><id=8><index><begin><length>
     public static final class Cancel extends Message{
-        private final int ind;
-        private final int start;
-        private final int clength;
+        private final int ind; //piece index
+        private final int start; //byteOffset within a piece
+        private final int clength; //cancel length, due to conflict in names
 
         public Cancel(final int ind, final int start, final int length){
             super(13, cancelID);
@@ -207,7 +207,7 @@ public class Message {
 
             case(bitfieldID):
                 byte[] bitfield = new byte[length - 1];
-                dataIn.readFully(bitfield);
+                dataIn.readFully(bitfield); //not sure if read fully will pass
                 return new Bitfield(bitfield);
 
             case(pieceID):
@@ -242,7 +242,7 @@ public class Message {
         }
     }
 
-    public Message parse(Message message, Peer peer) throws IOException{
+ /*  public Message parse(Message message, Peer peer) throws IOException{//parsing a message sent by peer
         byte id;
 
         int numOfPieces;
@@ -288,12 +288,11 @@ public class Message {
 
             case (bitfieldID):
                 Bitfield bitfield = (Bitfield) message;
-                peer.peerInfo.setPeerId(bitfield.getBitfield());
-
+                //peer.peerInfo.setPeerId(bitfield.getBitfield()); ///???
 
                 boolean[] haspiece1 = new boolean[numOfPieces];
                 byte b = 0;
-                peer.peerInfo.setHasPiece(haspiece1);
+                //peer.peerInfo.setHasPiece(haspiece1);
                 for (int i = 0; i < numOfPieces; i++){
                     int j = i; //beacuse i must stay unchanged
                     int k = 0; //place of a curr piece
@@ -313,13 +312,13 @@ public class Message {
                         peer.peerInfo.setHasPiece(haspiece1);
                     }
                 }
-                if(peer.checkBitfield(bitfield.bitfield))
+                if(!peer.checkBitfield(bitfield.bitfield)) //if they don't match, we should send interested, right?
                     return new Message(1,interestedID);
                 else
                     return new Message(1, uniterestedID);
 
             case (pieceID):
-                Piece piece = (Piece) message;
+                Piece piece = (Piece) message; //if a peer sends you a Piece message, he is sending you a block inside of a piece, so you still don't know if you have whole piece or now
                 if(piece.start > 0) //this means that peer has a piece
                     return new Have(piece.ind);
                 else
@@ -346,7 +345,7 @@ public class Message {
         }
         //return null;
 
-    }
+    } */
 
 
 
