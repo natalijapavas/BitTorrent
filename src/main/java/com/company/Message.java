@@ -1,5 +1,4 @@
 package com.company;
-
 import java.io.*;
 import java.io.DataOutputStream;
 
@@ -22,11 +21,11 @@ public class Message {
     private static final byte cancelID = 8;
     private static final byte portID = 9;
 
-    private static final Message KEEP_ALIVE = new Message(0, (byte) 255);
-    private static final Message CHOKE = new Message(1, chokeID);
-    private static final Message UNCHOKE = new Message(1, unchokeID);
-    private static final Message INTERESTED = new Message(1, interestedID);
-    private static final Message UNINTERESTED = new Message(1, uniterestedID);
+    public static final Message KEEP_ALIVE = new Message(0, (byte) 255);
+    public static final Message CHOKE = new Message(1, chokeID);
+    public static final Message UNCHOKE = new Message(1, unchokeID);
+    public static final Message INTERESTED = new Message(1, interestedID);
+    public static final Message UNINTERESTED = new Message(1, uniterestedID);
 
     /** We have 4 different types of payload:
     //Interested,not interested,choked and unchoked don't have a payload
@@ -76,7 +75,7 @@ public class Message {
         }
 
         public void encodePayload(DataOutputStream output) throws IOException {
-            output.write(this.i);
+            output.writeInt(this.i);
         }
     }
 
@@ -118,6 +117,18 @@ public class Message {
             output.writeInt(this.start);
             output.write(this.block);
         }
+
+        public byte[] getBlock() {
+            return block;
+        }
+
+        public int getStart() {
+            return start;
+        }
+
+        public int getInd() {
+            return ind;
+        }
     }
 
     //request: <len=0013><id=6><index><begin><length>
@@ -137,6 +148,7 @@ public class Message {
             output.writeInt(this.ind);
             output.writeInt(this.start);
             output.writeInt(this.len);
+
 
         }
     }
@@ -223,11 +235,25 @@ public class Message {
                 int len = dataIn.readInt();
                 return new Request(index,start1,len);
 
+
         }
         return null;
     }
 
-    public static void encode(final Message message, final OutputStream output) throws IOException{
+    public static void encode(final Message message, final DataOutputStream output) throws IOException{
+        if(message != null){
+            {
+                output.writeInt(message.length);
+                if(message.length > 0){
+                    output.write(message.id);
+                    message.encodePayload(output);
+                }
+                output.flush();
+            }
+        }
+    }
+
+    /* public static void encode(final Message message, final OutputStream output) throws IOException{
         DataOutputStream dos = null;
         if(message != null){
             {
@@ -240,7 +266,7 @@ public class Message {
                 dos.flush();
             }
         }
-    }
+    } */
 
  /*  public Message parse(Message message, Peer peer) throws IOException{//parsing a message sent by peer
         byte id;

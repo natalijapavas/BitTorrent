@@ -1,6 +1,7 @@
 package com.company;
 import com.company.Bencoding.BencodeEncoder;
 import com.company.Bencoding.BencodeValue;
+
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -80,7 +81,39 @@ public class Main {
             } */
             System.out.println("Response type: "+bencodeHttpResponse.getValueType());
 
+            System.out.println("************************************Testing Message class *********************************");
+            byte[] block=new byte[10];
+            for (int i = 0; i < block.length; i++) {
+                block[i]=(byte) i;
+            }
 
+
+            final Message cancel =new Message.Cancel(2,3,4);
+            File testFile=new File("/home/korisnik/Desktop/torrents/test.txt");
+            FileOutputStream fileOutputStream=new FileOutputStream(testFile);
+            DataOutputStream testOut=new DataOutputStream(fileOutputStream);
+            Message.encode(cancel,testOut);
+            testOut.close();
+            fileOutputStream.close();
+            FileInputStream fileInputStream=new FileInputStream(testFile);
+            DataInputStream testIn=new DataInputStream(fileInputStream);
+            Message resutlMsg=Message.decode(testIn);
+            System.out.println("Message id: "+resutlMsg.id);
+            //Message.Request result=(Message.Request) resutlMsg;
+            //System.out.println(result.len);
+            //System.out.println(result.ind);
+            //System.out.println(result.start);
+
+            //System.out.println("Piece index: "+result.getPieceIndex());
+            //System.out.println("Indicator: "+(result.ind));
+            //System.out.println("Start: "+(result.start));
+            //System.out.println("Length: "+(result.clength));
+            /*for(int i=0; i<result.getBitfield().length; i++)
+            {
+                System.out.println("El :" +i+" "+result.getBitfield()[i]);
+            } */
+            fileInputStream.close();
+            testIn.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
