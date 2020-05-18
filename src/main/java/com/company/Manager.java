@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class Manager extends Thread{
@@ -14,15 +16,43 @@ public class Manager extends Thread{
     private File file;
     private LinkedBlockingDeque<PeerMessage> messages = null;
     private boolean isRunning = false;
+    private PeerInfo peerClient;
+    private ArrayList<Piece> pieces;
 
-    Manager(ArrayList<Peer> peers, Tracker track, File file){
+    public Manager(ArrayList<Peer> peers, Tracker track, File file){
         this.peers = peers;
         this.track = track;
         this.file = file;
+        this.pieces=new ArrayList<>();
     }
 
+    public Manager(PeerInfo peerClient,ArrayList<Peer> peers, Tracker track, File file){
+        this.peers = peers;
+        this.track = track;
+        this.file = file;
+        this.peerClient=peerClient;
+        this.pieces=new ArrayList<>();
+    }
 
+    public void addPiece(Piece piece)
+    {
+        this.pieces.add(piece);
+        Comparator<Piece> pieceSorter = Comparator.comparing(Piece::getPieceIndex);
+        this.pieces.sort(pieceSorter);
+    }
 
+    public Piece getRarestPiece() //maybe it has to be array blocking?
+    {
+        Comparator<Piece> requestedSorter = Comparator.comparing(Piece::getTimesRequested).reversed();
+        PriorityQueue<Piece> sortedPieces=new PriorityQueue<>(requestedSorter);
+        for(Piece piece:this.pieces)
+        {
+            if(!piece.hasPiece())
+                sortedPieces.add(piece);
+        }
+        return sortedPieces.peek();
+
+    }
 
 
     //decoding messages recieved from the peers
