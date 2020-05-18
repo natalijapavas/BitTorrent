@@ -5,21 +5,21 @@ import java.io.DataOutputStream;
 public class Message {
 
     //ByteOutputStream out;
-    private static final byte keepAliveID = -1;
+    public static final byte keepAliveID = -1;
 
     //choke = peer will not send the file until peer unchokes
-    private static final byte chokeID = 0;
-    private static final byte unchokeID = 1;
+    public static final byte chokeID = 0;
+    public static final byte unchokeID = 1;
 
     //interested = we would like to download from the peer
-    private static final byte interestedID = 2;
-    private static final byte uniterestedID = 3;
-    private static final byte haveID = 4;
-    private static final byte bitfieldID = 5;
-    private static final byte requestID = 6;
-    private static final byte pieceID = 7;
-    private static final byte cancelID = 8;
-    private static final byte portID = 9;
+    public static final byte interestedID = 2;
+    public static final byte uniterestedID = 3;
+    public static final byte haveID = 4;
+    public static final byte bitfieldID = 5;
+    public static final byte requestID = 6;
+    public static final byte pieceID = 7;
+    public static final byte cancelID = 8;
+    public static final byte portID = 9;
 
     public static final Message KEEP_ALIVE = new Message(0, (byte) 255);
     public static final Message CHOKE = new Message(1, chokeID);

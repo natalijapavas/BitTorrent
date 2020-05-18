@@ -5,13 +5,13 @@ import java.net.Socket;
 import java.util.Arrays;
 
 public class Peer {
-    DataInputStream in = null;
-    DataOutputStream out = null;
-    int downloaded = 0;
-    boolean[] bitfield;
-    byte[] bfield; //ili byte[] peerID;
-    PeerInfo peerInfo;
-    int pieces;
+    private DataInputStream in = null;
+    private DataOutputStream out = null;
+    private int downloaded = 0;
+    private boolean[] bitfield;
+    private byte[] bfield; //ili byte[] peerID;
+    private PeerInfo peerInfo;
+    private int pieces;
 
 
     public Peer(boolean[] bitfield, byte[] bfield, PeerInfo peerInfo){
@@ -55,9 +55,50 @@ public class Peer {
         return handshake;
     }
 
-    public boolean checkBitfield(boolean[] otherBitfield)
+    public boolean[] getBitfield() {
+        return bitfield;
+    }
+
+    public int getDownloaded() {
+        return downloaded;
+    }
+
+    public int getPieces() {
+        return pieces;
+    }
+
+    public byte[] getBfield() {
+        return bfield;
+    }
+
+    public PeerInfo getPeerInfo() {
+        return peerInfo;
+    }
+
+    public void setBfield(byte[] bfield) {
+        this.bfield = bfield;
+    }
+
+    public void setBitfield(boolean[] bitfield) {
+        this.bitfield = bitfield;
+    }
+
+    public void setDownloaded(int downloaded) {
+        this.downloaded = downloaded;
+    }
+
+    public void setPeerInfo(PeerInfo peerInfo) {
+        this.peerInfo = peerInfo;
+    }
+
+    public void setPieces(int pieces) {
+        this.pieces = pieces;
+    }
+
+
+    public boolean checkBitfield(byte[] otherBitfield)
     {
-        return Arrays.equals(this.bitfield,otherBitfield);
+        return Arrays.equals(this.bfield,otherBitfield);
     }
 
 

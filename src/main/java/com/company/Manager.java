@@ -32,8 +32,8 @@ public class Manager extends Thread{
 
         if((peerMessage = this.messages.take()) != null){
             int numOfPieces;
-            int pieceLength = peerMessage.getPeer().peerInfo.getTracker().getMetaInfoFile().getPieceLength();
-            int fileLength = peerMessage.getPeer().peerInfo.getTracker().getMetaInfoFile().getFileLength();
+            int pieceLength = peerMessage.getPeer().getPeerInfo().getTracker().getMetaInfoFile().getPieceLength();
+            int fileLength = peerMessage.getPeer().getPeerInfo().getTracker().getMetaInfoFile().getFileLength();
             if(fileLength%pieceLength != 0)
                 numOfPieces = fileLength / pieceLength + 1;
             else
@@ -42,22 +42,22 @@ public class Manager extends Thread{
                 case Message.keepAliveID:
                     return new Message(0,Message.keepAliveID);
                 case Message.chokeID:
-                    peerMessage.getPeer().peerInfo.setPeerChocking(true);
+                    peerMessage.getPeer().getPeerInfo().setPeerChocking(true);
                     return null;
                 case Message.unchokeID:
-                    peerMessage.getPeer().peerInfo.setPeerChocking(false);
+                    peerMessage.getPeer().getPeerInfo().setPeerChocking(false);
                     return null;
                 case Message.interestedID:
-                    peerMessage.getPeer().peerInfo.setPeerInterested(true);
+                    peerMessage.getPeer().getPeerInfo().setPeerInterested(true);
                     return new Message(1,Message.unchokeID);
                 case Message.uniterestedID:
-                    peerMessage.getPeer().peerInfo.setPeerInterested(false);
+                    peerMessage.getPeer().getPeerInfo().setPeerInterested(false);
                     return null;
                 case Message.haveID:
-                    boolean haspiece[] = peerMessage.getPeer().peerInfo.getHasPiece();
+                    boolean haspiece[] = peerMessage.getPeer().getPeerInfo().getHasPiece();
                     Message.Have have = (Message.Have) peerMessage.getMessage();
                     haspiece[have.getPieceIndex()] = true;
-                    peerMessage.getPeer().peerInfo.setHasPiece(haspiece);
+                    peerMessage.getPeer().getPeerInfo().setHasPiece(haspiece);
                     return null;
                 case Message.bitfieldID:
                     Message.Bitfield bitfieldMSG = (Message.Bitfield) peerMessage.getMessage();
@@ -72,16 +72,16 @@ public class Manager extends Thread{
                         //8 bits -> 1 byte
                         k = (int) Math.ceil(j/8); //check math?
                         j = j % 8;
-                        b = (byte) (peerMessage.getPeer().peerInfo.getPeerId()[k] << j); //left shift
+                        b = (byte) (peerMessage.getPeer().getPeerInfo().getPeerId()[k] << j); //left shift
 
 
                         if (b < 0){
                             haspiece1[i] = true;
-                            peerMessage.getPeer().peerInfo.setHasPiece(haspiece1);
+                            peerMessage.getPeer().getPeerInfo().setHasPiece(haspiece1);
                         }
                         else {
                             haspiece1[i] = false;
-                            peerMessage.getPeer().peerInfo.setHasPiece(haspiece1);
+                            peerMessage.getPeer().getPeerInfo().setHasPiece(haspiece1);
                         }
                     }
                     if(!peerMessage.getPeer().checkBitfield(bitfield)) //if they don't match, we should send interested, right?
@@ -100,11 +100,11 @@ public class Manager extends Thread{
                     Message.Request req = (Message.Request) peerMessage.getMessage();
                     try {
                         //we are trying to find a piece of index req.ind*pieceLength + req.start
-                        peerMessage.getPeer().peerInfo.getThefile().seek(pieceLength * req.ind + req.start);
+                        peerMessage.getPeer().getPeerInfo().getThefile().seek(pieceLength * req.ind + req.start);
 
                         byte[] ourPiece = new byte[req.length];
                         //we are reading that piece
-                        peerMessage.getPeer().peerInfo.getThefile().readFully(ourPiece);
+                        peerMessage.getPeer().getPeerInfo().getThefile().readFully(ourPiece);
 
                         //ADD HERE UPLOADING AND DOWNLOADING REQUESTED PIECES
 
