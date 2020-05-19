@@ -2,10 +2,9 @@ package com.company;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.ServerSocket;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.PriorityQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class Manager extends Thread{
@@ -16,47 +15,21 @@ public class Manager extends Thread{
     private File file;
     private LinkedBlockingDeque<PeerMessage> messages = null;
     private boolean isRunning = false;
-    private PeerInfo peerClient;
-    private ArrayList<Piece> pieces;
+    private boolean[] currBitfield;
+    private static boolean fullFile = false;
+    private File outputFile;
 
-    public Manager(ArrayList<Peer> peers, Tracker track, File file){
+    Manager(ArrayList<Peer> peers, Tracker track, File file){
         this.peers = peers;
         this.track = track;
         this.file = file;
-        this.pieces=new ArrayList<>();
     }
 
-    public Manager(PeerInfo peerClient,ArrayList<Peer> peers, Tracker track, File file){
-        this.peers = peers;
-        this.track = track;
-        this.file = file;
-        this.peerClient=peerClient;
-        this.pieces=new ArrayList<>();
-    }
 
-    public void addPiece(Piece piece)
-    {
-        this.pieces.add(piece);
-        Comparator<Piece> pieceSorter = Comparator.comparing(Piece::getPieceIndex);
-        this.pieces.sort(pieceSorter);
-    }
 
-    public Piece getRarestPiece() //maybe it has to be array blocking?
-    {
-        Comparator<Piece> requestedSorter = Comparator.comparing(Piece::getTimesRequested).reversed();
-        PriorityQueue<Piece> sortedPieces=new PriorityQueue<>(requestedSorter);
-        for(Piece piece:this.pieces)
-        {
-            if(!piece.hasPiece())
-                sortedPieces.add(piece);
-        }
-        return sortedPieces.peek();
-
-    }
 
 
     //decoding messages recieved from the peers
-
     public Message parse() throws Exception {
         PeerMessage peerMessage;
 
@@ -77,7 +50,7 @@ public class Manager extends Thread{
                     return null;
                 case Message.unchokeID:
                     peerMessage.getPeer().getPeerInfo().setPeerChocking(false);
-                    return null;
+                return null;
                 case Message.interestedID:
                     peerMessage.getPeer().getPeerInfo().setPeerInterested(true);
                     return new Message(1,Message.unchokeID);
@@ -90,8 +63,8 @@ public class Manager extends Thread{
                     haspiece[have.getPieceIndex()] = true;
                     peerMessage.getPeer().getPeerInfo().setHasPiece(haspiece);
                     return null;
-                    /*
                 case Message.bitfieldID:
+                    /*
                     Message.Bitfield bitfieldMSG = (Message.Bitfield) peerMessage.getMessage();
                     byte[] bitfield = bitfieldMSG.getBitfield();
                     boolean[] haspiece1 = new boolean[numOfPieces];
@@ -121,7 +94,8 @@ public class Manager extends Thread{
                     else
                         return new Message(1, Message.uniterestedID);
 
-                    */
+                     */
+                    return null;
 
                 case Message.pieceID:
                     Message.Piece piece = (Message.Piece) peerMessage.getMessage(); //if a peer sends you a Piece message, he is sending you a block inside of a piece, so you still don't know if you have whole piece or now
@@ -129,15 +103,16 @@ public class Manager extends Thread{
                         return new Message.Have(piece.ind);
                     else
                         return null;
-                /*case Message.requestID:
+                case Message.requestID:
+                    /*
                     Message.Request req = (Message.Request) peerMessage.getMessage();
                     try {
                         //we are trying to find a piece of index req.ind*pieceLength + req.start
-                        peerMessage.getPeer().getPeerInfo().getOutputFile().seek(pieceLength * req.ind + req.start);
+                        peerMessage.getPeer().getPeerInfo().getThefile().seek(pieceLength * req.ind + req.start);
 
                         byte[] ourPiece = new byte[req.length];
                         //we are reading that piece
-                        peerMessage.getPeer().getPeerInfo().getOutputFile().readFully(ourPiece);
+                        peerMessage.getPeer().getPeerInfo().getThefile().readFully(ourPiece);
 
                         //ADD HERE UPLOADING AND DOWNLOADING REQUESTED PIECES
 
@@ -146,8 +121,11 @@ public class Manager extends Thread{
                     } catch(IOException e){
                         e.printStackTrace();
                         return null;
-                    }*/
+                    }
 
+
+                     */
+                    return null;
                 case Message.cancelID:
                     return null;
 
@@ -160,6 +138,30 @@ public class Manager extends Thread{
 
     }
 
+    public boolean fileComplete(){
+        for(int i = 0; i < this.currBitfield.length; i++){
+            if(this.currBitfield[i] == false)
+                return false;
+        }
+        return true;
+    }
+
+    public synchronized void getMessage(PeerMessage message){
+        if(message == null){
+            return;
+        }
+        this.messages.add(message);
+    }
+
+    public byte[] readFile(int index,int offset,int length) throws IOException{
+        RandomAccessFile file = new RandomAccessFile(this.outputFile,"r");
+        byte[] data =  new byte[length];
+
+        file.seek(this.track.getMetaInfoFile().getPieceLength() * index + offset);
+        file.read(data);
+        file.close();
+        return data;
+    }
 
 
 
