@@ -2,16 +2,20 @@ package com.company;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.URLEncoder;
 import java.util.Arrays;
 
 public class Peer {
-    private DataInputStream in = null;
-    private DataOutputStream out = null;
+    //add the stirng "BitTorrent protocol"
+    private static byte[] BTChars = { 'B', 'i', 't', 'T', 'o', 'r', 'r', 'e', 'n', 't', ' ',
+            'p', 'r', 'o', 't', 'o', 'c', 'o', 'l' };
+    private static final byte BTCharsLen=0x13;
+    private static final int HANDSHAKE_SIZE=68;
     private int downloaded = 0;
     private boolean[] bitfield;
     private byte[] bfield; //ili byte[] peerID;
     private PeerInfo peerInfo;
-    private int pieces;
+    private Socket socket;
 
 
     public Peer(boolean[] bitfield, byte[] bfield, PeerInfo peerInfo){
@@ -20,37 +24,37 @@ public class Peer {
         this.peerInfo = peerInfo;
     }
 
+    public Peer(PeerInfo peerInfo)
+    {
+        this.peerInfo=peerInfo;
+    }
 
     //Generate handhake
-    public synchronized static byte[] handshake(Tracker track){
-        byte[] handshake = new byte[68];
+    public static byte[] handshake(Tracker tracker){
+        byte[] handshake = new byte[HANDSHAKE_SIZE];
         int currPos = 0;
-        handshake[currPos] = 0x13;
-
-        //add the stirng "BitTorrent protocol"
-        byte[] BTChars = { 'B', 'i', 't', 'T', 'o', 'r', 'r', 'e', 'n', 't', ' ',
-                'p', 'r', 'o', 't', 'o', 'c', 'o', 'l' };
-        System.arraycopy(BTChars, 0, handshake, currPos, BTChars.length);
-        currPos += BTChars.length;
-
+        handshake[currPos] =BTCharsLen;
+        ++currPos;
+        System.arraycopy(BTChars, 0, handshake, currPos, BTCharsLen);
+        currPos += BTCharsLen;
+        System.out.println("Upisao torrent karaktere");
         //8 empty slots
         for(int i = 0; i < 8; currPos++, i++){
             handshake[currPos] = 0;
         }
 
         //info hash
-        String infoHash=track.getInfoHash();
-        byte[] peerId=track.getPeerId(); //change 1
+        byte[] infoHash=tracker.getInfoHashBytes();
+        byte[] peerId=tracker.getPeerId(); //change 1
 
 
 
         //public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
-        System.arraycopy(infoHash, 0, handshake, currPos, infoHash.length());
-        currPos += infoHash.length();
+        System.arraycopy(infoHash, 0, handshake, currPos, infoHash.length);
+        currPos += infoHash.length;
 
-        //peer id
 
-        System.arraycopy(peerId, 0, handshake, currPos,peerId.length); //change2
+        System.arraycopy(peerId, 0, handshake, currPos,peerId.length);
 
         return handshake;
     }
@@ -63,9 +67,6 @@ public class Peer {
         return downloaded;
     }
 
-    public int getPieces() {
-        return pieces;
-    }
 
     public byte[] getBfield() {
         return bfield;
@@ -91,10 +92,6 @@ public class Peer {
         this.peerInfo = peerInfo;
     }
 
-    public void setPieces(int pieces) {
-        this.pieces = pieces;
-    }
-
 
     public boolean checkBitfield(byte[] otherBitfield)
     {
@@ -109,28 +106,32 @@ public class Peer {
     }
 
     //connect to a peer
-    public synchronized boolean createSocket(Tracker track, String ip, int port) throws IOException{
-        Socket sock = null;
+    public  boolean createSocket() throws IOException{
         System.out.println("create");
         try{
-            sock = new Socket(ip,port);
-            byte[] handshake = handshake(track);
-            System.out.println(sock.isConnected());
-            in = new DataInputStream(sock.getInputStream());
-            System.out.println(in);
-            //this is put only for the purposes of testing, needs to be resolved still
-            byte [] input = new byte[20];
-
-            if(!checkHandhshake(track.getInfoHash().getBytes(), input))
-                return false;
-            out = new DataOutputStream((sock.getOutputStream()));
+            this.socket = new Socket(this.peerInfo.getIp(),this.peerInfo.getPort());
+            byte[] handshake = this.handshake(this.peerInfo.getTracker());
+            System.out.println("Are we connected to Peer: "+ this.socket.isConnected());
+            DataOutputStream out = new DataOutputStream((this.socket.getOutputStream()));
             out.write(handshake);
-            //peerInfo.hanshake=true;
+            System.out.println("Message written");
+            DataInputStream in = new DataInputStream(this.socket.getInputStream());
+
+            byte [] response = new byte[HANDSHAKE_SIZE];
+            System.out.println("Preparing to read message");
+            in.read(response);
+
+            System.out.println("Peer message response: "+URLEncoder.encode(response.toString(),"UTF-8"));
+
+            if(!checkHandhshake(this.peerInfo.getTracker().getInfoHashBytes(), response))
+                return false;
             peerInfo.setHandshake(true);
             out.flush();
+            System.out.println("Socket created!");
             return true;
         } catch(IOException e){
             System.out.print("Couldn't complete handshake");
+            e.printStackTrace();
             return false;
         }
     }

@@ -7,8 +7,7 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
-/*Todo verovatno treba recovery code u slucaju da URL konekcija ne uspe */
-/*Todo: Announce list extension
+/* Todo verovatno treba recovery code u slucaju da URL konekcija ne uspe
 https://web.archive.org/web/20200225211151/http://www.bittorrent.org/beps/bep_0012.html
  */
 
@@ -25,6 +24,8 @@ public class Tracker {
     {
         return new String(this.metaInfoFile.getInfoHash(),StandardCharsets.UTF_8);
     }
+
+    public byte[] getInfoHashBytes(){return this.metaInfoFile.getInfoHash();}
 
 
 
@@ -44,7 +45,7 @@ public class Tracker {
             int responseCode=connection.getResponseCode();
             System.out.println("Response code is: "+responseCode);
             response=new BencodeDecoder(connection.getInputStream()).decode();
-            if (response.getMap().keySet().contains((String) "failure reasone"))
+            if (response.getMap().keySet().contains((String) "failure response"))
             {
                 System.out.println("Error occured");
             }

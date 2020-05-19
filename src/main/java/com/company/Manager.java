@@ -56,6 +56,7 @@ public class Manager extends Thread{
 
 
     //decoding messages recieved from the peers
+    /*
     public Message parse() throws Exception {
         PeerMessage peerMessage;
 
@@ -130,11 +131,11 @@ public class Manager extends Thread{
                     Message.Request req = (Message.Request) peerMessage.getMessage();
                     try {
                         //we are trying to find a piece of index req.ind*pieceLength + req.start
-                        peerMessage.getPeer().getPeerInfo().getThefile().seek(pieceLength * req.ind + req.start);
+                        peerMessage.getPeer().getPeerInfo().getOutputFile().seek(pieceLength * req.ind + req.start);
 
                         byte[] ourPiece = new byte[req.length];
                         //we are reading that piece
-                        peerMessage.getPeer().getPeerInfo().getThefile().readFully(ourPiece);
+                        peerMessage.getPeer().getPeerInfo().getOutputFile().readFully(ourPiece);
 
                         //ADD HERE UPLOADING AND DOWNLOADING REQUESTED PIECES
 
@@ -155,7 +156,7 @@ public class Manager extends Thread{
         }
         return null;
 
-    }
+    } */
 
 
 

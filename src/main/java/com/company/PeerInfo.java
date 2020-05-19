@@ -1,15 +1,12 @@
 package com.company;
 
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.net.Socket;
 
 public class PeerInfo {
-    int port;
-    String name;
-    String ip;
+    private int port;
+    private String name;
+    private String ip;
 
     //All connections start off as 'Not interested' and 'Choked'
 
@@ -22,31 +19,36 @@ public class PeerInfo {
 
     private byte[] peerId;
 
-    private DataInputStream in = null;
-    private DataOutputStream out = null;
-
     private boolean handshake = false;
 
     private boolean[] hasPiece;
 
     private int currentPieceIndex = -1;
-    private RandomAccessFile thefile;
+    private File outputFile;
 
-    private Tracker track;
+    private Tracker track; //Tracker through which we obtained relevant data
     private int downloaded = 0;
     private int uploaded = 0;
 
     private boolean badPeer = false;
-    private boolean bad;
-    private Socket userSocket;
+    private boolean bad; //what is this???
 
-    PeerInfo(String name, int port, String ip, RandomAccessFile thefile, Tracker track){
+    public PeerInfo(String name, int port, String ip, File outputFile, Tracker track){
         this.name = name;
         this.port = port;
         this.ip = ip;
         this.bad = false;
         this.track = track;
-        this.thefile = thefile;
+        this.outputFile = outputFile;
+    }
+
+    public PeerInfo(String name, int port, String ip,Tracker track)
+    {
+        this.name = name;
+        this.port = port;
+        this.ip = ip;
+        this.bad = false;
+        this.track = track;
     }
 
     public String getName(){
@@ -59,6 +61,11 @@ public class PeerInfo {
 
     public void setPort(int port){
         this.port = port;
+    }
+
+    public int getPort()
+    {
+        return this.port;
     }
 
     public String getIp(){
@@ -110,29 +117,6 @@ public class PeerInfo {
         this.hasPiece = hasPiece;
     }
 
-    public Socket getUserSocket(){
-        return userSocket;
-    }
-
-    public void setUserSocket(Socket userSocket){
-        this.userSocket = userSocket;
-    }
-
-    public DataInputStream getInput(){
-        return in;
-    }
-
-    public void setInput(DataInputStream in){
-        this.in = in;
-    }
-
-    public DataOutputStream getOutput(){
-        return out;
-    }
-
-    public void setOutput(DataOutputStream out){
-        this.out = out;
-    }
 
     public boolean isHandshake(){
         return handshake;
@@ -150,7 +134,11 @@ public class PeerInfo {
         this.currentPieceIndex = currentPieceIndex;
     }
 
-    public RandomAccessFile getThefile(){ return thefile;}
+    public void setOutputFile(File outputFile) {
+        this.outputFile = outputFile;
+    }
+
+    public File getOutputFile(){ return outputFile;}
 
     public Tracker getTracker(){return track;}
 }

@@ -3,6 +3,7 @@ import com.company.Bencoding.BencodeEncoder;
 import com.company.Bencoding.BencodeValue;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
@@ -13,6 +14,11 @@ public class Main {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
         //Linkovi za Testiranje
         String path="/home/korisnik/Desktop/torrents/KNOPPIX_V7.7.1DVD-2016-10-22-EN.torrent";
+        //String path="/home/korisnik/Desktop/torrents/VISB tablice.pdf.torrent";
+        //String path="/home/korisnik/Desktop/torrents/learning_curve-highvariance.png.torrent";
+        //String path="/home/korisnik/Desktop/torrents/Nacrtna geometrija - Zagorka Snajder.pdf.torrent";
+        //String path="/home/korisnik/Desktop/torrents/Metodika-nastave-Zadaci-6-poena-1.docx.torrent";
+
         //String path="/home/korisnik/Desktop/torrents/bunny.torrent";
         //String path="/home/korisnik/Desktop/torrents/alice.torrent";
         //String path="/home/korisnik/Desktop/torrents/leaves.torrent";
@@ -73,13 +79,29 @@ public class Main {
             System.out.println("************************************Testing http tracker requests***************************");
             BencodeValue bencodeHttpResponse=tracker.sendHTTPAnnounceRequest();
             Map<String,BencodeValue> bencodeMap=bencodeHttpResponse.getMap();
-            /*for (Map.Entry e :bencodeMap.entrySet())
+            System.out.println("Response type: "+bencodeHttpResponse.getValueType());
+            System.out.println("*******************************Showing key set of httpResponse***************************************");
+            for(Map.Entry e:bencodeMap.entrySet())
             {
                 System.out.println((String)e.getKey());
-                BencodeValue value=(BencodeValue)e.getValue();
-                System.out.println(value.getString());
-            } */
-            System.out.println("Response type: "+bencodeHttpResponse.getValueType());
+            }
+            System.out.println("********************************Extraction and connection to peers****************************************** ");
+            List<BencodeValue> peerList=bencodeMap.get("peers").getList();
+            PeerInfo testPeerInfo=new PeerInfo(null,0,null, null);
+            for(BencodeValue value:peerList)
+            {
+
+                Map<String, BencodeValue> peer=value.getMap();
+                System.out.println("New Peer: ");
+                System.out.println("Peer id: "+peer.get("peer id").getString());
+                System.out.println("Port: "+peer.get("port").getNumber());
+                System.out.println("Ip: "+peer.get("ip").getString());
+                testPeerInfo=new PeerInfo(peer.get("peer id").getString(), peer.get("port").getInt(),peer.get("ip").getString(),tracker);
+                break;
+            }
+            Peer testPeer=new Peer(testPeerInfo);
+            System.out.println("Socket is created: "+testPeer.createSocket());
+            //testPeer.
 
             System.out.println("************************************Testing Message class *********************************");
             byte[] block=new byte[10];
@@ -98,7 +120,7 @@ public class Main {
             FileInputStream fileInputStream=new FileInputStream(testFile);
             DataInputStream testIn=new DataInputStream(fileInputStream);
             Message resutlMsg=Message.decode(testIn);
-            System.out.println("Message id: "+resutlMsg.id);
+            //System.out.println("Message id: "+resutlMsg.id);
             //Message.Request result=(Message.Request) resutlMsg;
             //System.out.println(result.len);
             //System.out.println(result.ind);
@@ -114,6 +136,7 @@ public class Main {
             } */
             fileInputStream.close();
             testIn.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
