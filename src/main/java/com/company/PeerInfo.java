@@ -101,6 +101,9 @@ public class PeerInfo {
         this.peerChocking = peerChocking;
     }
 
+    public File getOputputFile(){
+        return outputFile;
+    }
     public boolean isInterested(){ return interested; }
 
     public void setInterested(boolean interested){ this.interested = interested;}

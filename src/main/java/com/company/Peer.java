@@ -12,7 +12,7 @@ public class Peer {
     private static final byte BTCharsLen=0x13;
     private static final int HANDSHAKE_SIZE=68;
     private int downloaded = 0;
-    private boolean[] bitfield;
+    private boolean[] bitfield; //our real bitfield, but in messages we get byte[] bitfield
     private byte[] bfield; //ili byte[] peerID;
     private PeerInfo peerInfo;
     private Socket socket;
@@ -98,6 +98,29 @@ public class Peer {
         return Arrays.equals(this.bfield,otherBitfield);
     }
 
+    //converting from byte[] bitfield to boolean[] bitfield and updating our bitfield
+    public boolean[] bitfieldToBool(byte[] bitfield,int numPieces){
+        if(bitfield == null)
+            return null;
+        else{
+            this.bfield = bitfield;
+            boolean[] boolBitfield = new boolean[numPieces];
+            for(int i = 0; i < numPieces; i++){
+                int byteI = i/8;
+                int bitI = i%8;
+
+                    //this will be true only if bitfield[byteI] is 1
+                if(((bitfield[byteI] << bitI) & 0x80) == 0x80)
+                    boolBitfield[i] = true;
+                else
+                    boolBitfield[i] = false;
+            }
+            this.bitfield = boolBitfield;
+            return boolBitfield;
+
+        }
+
+    }
 
     public boolean checkHandhshake(byte[] info, byte[] response) throws IOException {
         byte[] peerHash = new byte[20];
