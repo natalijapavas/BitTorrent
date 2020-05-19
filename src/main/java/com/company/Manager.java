@@ -17,7 +17,7 @@ public class Manager extends Thread{
     private boolean isRunning = false;
     private boolean[] currBitfield;
     private static boolean fullFile = false;
-
+    private int[] pieceRepeating;
 
     Manager(ArrayList<Peer> peers, Tracker track, File file){
         this.peers = peers;
@@ -25,6 +25,35 @@ public class Manager extends Thread{
         this.file = file;
     }
 
+    //counting how many peers have the piece that we need - for each piece
+    public void pieceRepeating(){
+        for(Peer p: this.peers){
+            for(int i = 0; i < this.pieceRepeating.length; i++){
+                //we count instances of the pieces that we need
+                if(p.getBitfield()[i] == true){
+                    this.pieceRepeating[i]++;
+                }
+            }
+        }
+    }
+
+    public int getRarest(Peer peer){
+        pieceRepeating();
+        int min = Integer.MAX_VALUE; //Javas integer infinity
+        int minI = pieceRepeating.length;
+        for(int i = 0; i < this.pieceRepeating.length;i++){
+            //checking if we already have this piece
+            if(this.currBitfield[i] == false && peer.getBitfield()[i] == true){
+                //if we don't have the piece, we check how common it is
+                //we want to find the rarest
+                if(min > this.pieceRepeating[i]){
+                    min = pieceRepeating[i];
+                    minI = i;
+                }
+            }
+        }
+        return pieceRepeating[minI];
+    }
 
 
 
