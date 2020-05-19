@@ -17,7 +17,7 @@ public class Manager extends Thread{
     private boolean isRunning = false;
     private boolean[] currBitfield;
     private static boolean fullFile = false;
-    private File outputFile;
+   
 
     Manager(ArrayList<Peer> peers, Tracker track, File file){
         this.peers = peers;
@@ -154,7 +154,7 @@ public class Manager extends Thread{
     }
 
     public byte[] readFile(int index,int offset,int length) throws IOException{
-        RandomAccessFile file = new RandomAccessFile(this.outputFile,"r");
+        RandomAccessFile file = new RandomAccessFile(this.file,"r");
         byte[] data =  new byte[length];
 
         file.seek(this.track.getMetaInfoFile().getPieceLength() * index + offset);
