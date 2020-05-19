@@ -5,6 +5,9 @@ import com.company.Bencoding.BencodeValue;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /* Todo verovatno treba recovery code u slucaju da URL konekcija ne uspe
@@ -14,10 +17,12 @@ https://web.archive.org/web/20200225211151/http://www.bittorrent.org/beps/bep_00
 public class Tracker {
     private MetaInfoFile metaInfoFile;
     private byte[] peerId;
+    private int port;
 
     public Tracker(MetaInfoFile metaInfoFile) throws IOException {
         this.metaInfoFile=metaInfoFile;
         this.peerId=generatePeerId();
+        this.port=generatePortNumber();
     }
 
     public String getInfoHash()
@@ -27,7 +32,9 @@ public class Tracker {
 
     public byte[] getInfoHashBytes(){return this.metaInfoFile.getInfoHash();}
 
-
+    public int getPort() {
+        return port;
+    }
 
     //URL should look like: https://torrent.ubuntu.com/announce?info_hash=%9A%813%3C%1B%16%E4%A8%3C%10%F3%05%2C%15%90%AA%DF%5E.%20&peer_id=ABCDEFGHIJKLMNOPQRST&port=6881&uploaded=0&downloaded=0&left=727955456&event=started&numwant=100&no_peer_id=1&compact=1
     public BencodeValue sendHTTPAnnounceRequest()
@@ -59,10 +66,15 @@ public class Tracker {
         return response;
     }
 
+
     public byte[] getPeerId() {
         return peerId;
     }
 
+    public boolean isOurTorrentClient(String peerID)
+    {
+        return peerID.compareTo(this.peerId.toString())==0;
+    }
 
     private byte[] generatePeerId() throws IOException //mozda ne treba kao hex?
     {
@@ -85,8 +97,8 @@ public class Tracker {
     //Subject to change, following info hash problem resolution
     private String generateAddress() throws BencodeFormatException, UnknownHostException, UnsupportedEncodingException {
         StringBuffer strBuffer=new StringBuffer(metaInfoFile.getAnnounce());
-        int portNum=generatePortNumber();
-        if(portNum==-1)
+        //int portNum=generatePortNumber(); //ovde treba recovery code
+        if(this.port==-1)
             return null;
         strBuffer.append('?');
 
@@ -111,7 +123,7 @@ public class Tracker {
         strBuffer.append('&');
         strBuffer.append(URLEncoder.encode("port", "UTF-8"));
         strBuffer.append('=');
-        strBuffer.append(URLEncoder.encode(new Integer(portNum).toString(), "UTF-8"));
+        strBuffer.append(URLEncoder.encode(new Integer(this.port).toString(), "UTF-8"));
 
         strBuffer.append('&');
         strBuffer.append(URLEncoder.encode("uploaded", "UTF-8"));
@@ -149,6 +161,32 @@ public class Tracker {
         return metaInfoFile;
     }
 
+    public ArrayList<Peer> generatePeerList(BencodeValue bencodeHttpResponse)
+    {
+        ArrayList<Peer> peerList=new ArrayList<>();
+            try {
+                Map<String,BencodeValue> bencodeMap= bencodeHttpResponse.getMap();
+                List<BencodeValue> bencodedPeerList=bencodeMap.get("peers").getList();
+                for(BencodeValue value:bencodedPeerList)
+                {
+
+                    Map<String, BencodeValue> peer=value.getMap();
+                    String peerId=peer.get("peer id").getString();
+                    if(isOurTorrentClient(peerId))
+                        continue;
+                    Integer portNumber=peer.get("port").getInt();
+                    String ip=peer.get("ip").getString();
+                    PeerInfo peerInfo=new PeerInfo(peerId,portNumber,ip,this);
+                    peerList.add(new Peer(peerInfo));
+                }
+                return peerList;
+            }
+            catch (BencodeFormatException e) {
+                e.printStackTrace();
+            }
+        return null;
+    }
+
     private static String urlEncode(byte[] binary) {
         if (binary == null) {
             return null;
@@ -164,7 +202,6 @@ public class Tracker {
     }
     /** Returns one of the standard port numbers for bittorrent protocol, or -1 if not available
      *
-     * @return
      */
   private int generatePortNumber()
   {

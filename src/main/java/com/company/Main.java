@@ -1,14 +1,11 @@
 package com.company;
 import com.company.Bencoding.BencodeEncoder;
 import com.company.Bencoding.BencodeValue;
-
 import java.io.*;
-import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 
-/*Reading torrent tests performed on local machine */
 
 public class Main {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
@@ -19,12 +16,6 @@ public class Main {
         //String path="/home/korisnik/Desktop/torrents/Nacrtna geometrija - Zagorka Snajder.pdf.torrent";
         //String path="/home/korisnik/Desktop/torrents/Metodika-nastave-Zadaci-6-poena-1.docx.torrent";
 
-        //String path="/home/korisnik/Desktop/torrents/bunny.torrent";
-        //String path="/home/korisnik/Desktop/torrents/alice.torrent";
-        //String path="/home/korisnik/Desktop/torrents/leaves.torrent";
-        //String path="/home/korisnik/Desktop/torrents/sintel.torrent";
-        //String path="/home/korisnik/Desktop/torrents/tears-of-steel.torrent";
-        //String path="/home/korisnik/Desktop/torrents/cosmos-laundromat.torrent";
 
         File torrentFile = new File(path);
         System.out.println("Testiranje Bencode Encoder funkcija:");
@@ -76,7 +67,7 @@ public class Main {
 
             System.out.println("Info hash is: "+document.getInfoHashHex());
             Tracker tracker=new Tracker(document);
-            System.out.println("************************************Testing http tracker requests***************************");
+            System.out.println("************************************Testing http tracker requests*************************************");
             BencodeValue bencodeHttpResponse=tracker.sendHTTPAnnounceRequest();
             Map<String,BencodeValue> bencodeMap=bencodeHttpResponse.getMap();
             System.out.println("Response type: "+bencodeHttpResponse.getValueType());
@@ -85,7 +76,7 @@ public class Main {
             {
                 System.out.println((String)e.getKey());
             }
-            System.out.println("********************************Extraction and connection to peers****************************************** ");
+            System.out.println("********************************Extraction and connection to peers*********************************** ");
             List<BencodeValue> peerList=bencodeMap.get("peers").getList();
             PeerInfo testPeerInfo=new PeerInfo(null,0,null, null);
             for(BencodeValue value:peerList)
@@ -103,7 +94,7 @@ public class Main {
             System.out.println("Socket is created: "+testPeer.createSocket());
             //testPeer.
 
-            System.out.println("************************************Testing Message class *********************************");
+            System.out.println("************************************Testing Message class *******************************************");
             byte[] block=new byte[10];
             for (int i = 0; i < block.length; i++) {
                 block[i]=(byte) i;
