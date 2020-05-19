@@ -2,18 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d2c03741-b4a7-4aa9-b815-2b3bc216bbfb" name="Default Changelist" comment="bencode update 2">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Manager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Manager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Peer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Peer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/PeerInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/PeerInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Tracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Tracker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/BitTorrentProject.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/company/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/company/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/company/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/company/Message.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/company/Peer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/company/Peer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/company/PeerInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/company/PeerInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/company/Tracker.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/company/Tracker.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

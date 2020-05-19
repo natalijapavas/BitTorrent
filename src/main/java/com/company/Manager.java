@@ -56,7 +56,7 @@ public class Manager extends Thread{
 
 
     //decoding messages recieved from the peers
-    /*
+
     public Message parse() throws Exception {
         PeerMessage peerMessage;
 
@@ -90,6 +90,7 @@ public class Manager extends Thread{
                     haspiece[have.getPieceIndex()] = true;
                     peerMessage.getPeer().getPeerInfo().setHasPiece(haspiece);
                     return null;
+                    /*
                 case Message.bitfieldID:
                     Message.Bitfield bitfieldMSG = (Message.Bitfield) peerMessage.getMessage();
                     byte[] bitfield = bitfieldMSG.getBitfield();
@@ -120,6 +121,7 @@ public class Manager extends Thread{
                     else
                         return new Message(1, Message.uniterestedID);
 
+                    */
 
                 case Message.pieceID:
                     Message.Piece piece = (Message.Piece) peerMessage.getMessage(); //if a peer sends you a Piece message, he is sending you a block inside of a piece, so you still don't know if you have whole piece or now
@@ -127,7 +129,7 @@ public class Manager extends Thread{
                         return new Message.Have(piece.ind);
                     else
                         return null;
-                case Message.requestID:
+                /*case Message.requestID:
                     Message.Request req = (Message.Request) peerMessage.getMessage();
                     try {
                         //we are trying to find a piece of index req.ind*pieceLength + req.start
@@ -144,7 +146,7 @@ public class Manager extends Thread{
                     } catch(IOException e){
                         e.printStackTrace();
                         return null;
-                    }
+                    }*/
 
                 case Message.cancelID:
                     return null;
@@ -156,7 +158,7 @@ public class Manager extends Thread{
         }
         return null;
 
-    } */
+    }
 
 
 
