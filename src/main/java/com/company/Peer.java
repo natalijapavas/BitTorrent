@@ -136,4 +136,33 @@ public class Peer {
         }
     }
 
+    //send message
+    public synchronized void sendMessage(Message m) throws IOException{
+        if(this.getPeerInfo().getOut() == null)
+            throw new IOException();
+        DataOutputStream dos = (DataOutputStream) this.getPeerInfo().getOut();
+        Message.encode(m,dos);
+
+    }
+
+    //choking
+    public void choke(){
+        try{
+            this.sendMessage(Message.CHOKE);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        this.getPeerInfo().setChockingPeer(true);
+    }
+
+    //unchoking
+    public void unchoke(){
+        try{
+            this.sendMessage(Message.UNCHOKE);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        this.getPeerInfo().setChockingPeer(false);
+    }
+
 }

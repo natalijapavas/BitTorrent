@@ -17,7 +17,7 @@ public class Manager extends Thread{
     private boolean isRunning = false;
     private boolean[] currBitfield;
     private static boolean fullFile = false;
-   
+
 
     Manager(ArrayList<Peer> peers, Tracker track, File file){
         this.peers = peers;

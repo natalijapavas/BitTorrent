@@ -31,13 +31,14 @@ public class PeerInfo {
     private int uploaded = 0;
 
     private boolean badPeer = false;
-    private boolean bad; //what is this???
 
+    protected OutputStream out;
+    protected InputStream in;
     public PeerInfo(String name, int port, String ip, File outputFile, Tracker track){
         this.name = name;
         this.port = port;
         this.ip = ip;
-        this.bad = false;
+
         this.track = track;
         this.outputFile = outputFile;
     }
@@ -47,7 +48,7 @@ public class PeerInfo {
         this.name = name;
         this.port = port;
         this.ip = ip;
-        this.bad = false;
+
         this.track = track;
     }
 
@@ -70,6 +71,14 @@ public class PeerInfo {
 
     public String getIp(){
         return ip;
+    }
+
+    public OutputStream getOut() {
+        return out;
+    }
+
+    public InputStream getIn(){
+        return in;
     }
 
     public void setIp(String ip){
