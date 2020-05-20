@@ -59,7 +59,7 @@ public class Manager extends Thread{
 
 
     //decoding messages recieved from the peers
-    public Message parse() throws Exception {
+    public void parse() throws Exception {
         PeerMessage peerMessage;
 
 
@@ -73,98 +73,97 @@ public class Manager extends Thread{
                 numOfPieces = fileLength / pieceLength;
             switch (peerMessage.getMessage().id){
                 case Message.keepAliveID:
-                    return new Message(0,Message.keepAliveID);
+                    peerMessage.getPeer().sendMessage(Message.KEEP_ALIVE);
+                    break;
                 case Message.chokeID:
                     peerMessage.getPeer().getPeerInfo().setPeerChocking(true);
-                    return null;
+                    break;
                 case Message.unchokeID:
                     peerMessage.getPeer().getPeerInfo().setPeerChocking(false);
-                return null;
+                    break;
                 case Message.interestedID:
                     peerMessage.getPeer().getPeerInfo().setPeerInterested(true);
-                    return new Message(1,Message.unchokeID);
+                    peerMessage.getPeer().sendMessage(Message.UNCHOKE);
                 case Message.uniterestedID:
                     peerMessage.getPeer().getPeerInfo().setPeerInterested(false);
-                    return null;
+                    break;
                 case Message.haveID:
                     boolean haspiece[] = peerMessage.getPeer().getPeerInfo().getHasPiece();
                     Message.Have have = (Message.Have) peerMessage.getMessage();
                     haspiece[have.getPieceIndex()] = true;
                     peerMessage.getPeer().getPeerInfo().setHasPiece(haspiece);
-                    return null;
+                    break;
                 case Message.bitfieldID:
-                    /*
-                    Message.Bitfield bitfieldMSG = (Message.Bitfield) peerMessage.getMessage();
-                    byte[] bitfield = bitfieldMSG.getBitfield();
-                    boolean[] haspiece1 = new boolean[numOfPieces];
-                    byte b = 0;
 
-                    for (int i = 0; i < numOfPieces; i++){
-                        int j = i; //beacuse i must stay unchanged
-                        int k = 0; //place of a curr piece
-                        //we want to find a place of each peace
-                        //8 bits -> 1 byte
-                        k = (int) Math.ceil(j/8); //check math?
-                        j = j % 8;
-                        b = (byte) (peerMessage.getPeer().getPeerInfo().getPeerId()[k] << j); //left shift
+                    Message.Bitfield BitMSG = (Message.Bitfield) peerMessage.getMessage();
+                    byte[] bitfieldPayload = BitMSG.getBitfield();
+                    //with this i should have updated bitfield in peer class
+                    boolean[] bitfield = peerMessage.getPeer().bitfieldToBool(bitfieldPayload,numOfPieces);
 
-
-                        if (b < 0){
-                            haspiece1[i] = true;
-                            peerMessage.getPeer().getPeerInfo().setHasPiece(haspiece1);
+                    for(int i = 0; i < peerMessage.getPeer().getBitfield().length; i++){
+                        //we want a piece if we need it, someone has it, and we dont have it
+                        //in this case we send a message INTERESTED
+                        if(peerMessage.getPeer().getBitfield()[i] == true && this.currBitfield[i] == false){
+                            peerMessage.getPeer().sendMessage(Message.INTERESTED);
+                            peerMessage.getPeer().getPeerInfo().setInterested(true);
+                            break;
                         }
-                        else {
-                            haspiece1[i] = false;
-                            peerMessage.getPeer().getPeerInfo().setHasPiece(haspiece1);
-                        }
+
                     }
-                    if(!peerMessage.getPeer().checkBitfield(bitfield)) //if they don't match, we should send interested, right?
-                        return new Message(1,Message.interestedID);
-                    else
-                        return new Message(1, Message.uniterestedID);
-
-                     */
-                    return null;
+                    //if we dont find a piece we need that we dont have, we dont send a message
+                    break;
 
                 case Message.pieceID:
                     Message.Piece piece = (Message.Piece) peerMessage.getMessage(); //if a peer sends you a Piece message, he is sending you a block inside of a piece, so you still don't know if you have whole piece or now
                     if(piece.start > 0) //this means that peer has a piece
-                        return new Message.Have(piece.ind);
+                        peerMessage.getPeer().sendMessage(new Message.Have(piece.ind));
                     else
-                        return null;
+                        break;
                 case Message.requestID:
                     /*
                     Message.Request req = (Message.Request) peerMessage.getMessage();
                     try {
+
                         //we are trying to find a piece of index req.ind*pieceLength + req.start
-                        peerMessage.getPeer().getPeerInfo().getThefile().seek(pieceLength * req.ind + req.start);
+                        peerMessage.getPeer().getPeerInfo().getOutputFile().seek(pieceLength * req.ind + req.start);
 
                         byte[] ourPiece = new byte[req.length];
                         //we are reading that piece
-                        peerMessage.getPeer().getPeerInfo().getThefile().readFully(ourPiece);
+                        peerMessage.getPeer().getPeerInfo().getOutputFile().readFully(ourPiece);
 
                         //ADD HERE UPLOADING AND DOWNLOADING REQUESTED PIECES
 
-
-                        return new Message.Piece(req.ind, req.start, ourPiece);
+                        peerMessage.getPeer().sendMessage(new Message.Piece(req.ind,req.start,ourPiece));
+                        break;
                     } catch(IOException e){
                         e.printStackTrace();
-                        return null;
+                        break;
                     }
 
-
                      */
-                    return null;
+
+
+
+                    break;
                 case Message.cancelID:
-                    return null;
+                    break;
 
                 default:
                     throw new IllegalStateException("Unexpected value: " + peerMessage.getMessage().id);
 
             }
         }
-        return null;
 
+    }
+
+    public void run(){
+        while(this.isRunning == true){
+            try{
+                parse();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public boolean fileComplete(){
