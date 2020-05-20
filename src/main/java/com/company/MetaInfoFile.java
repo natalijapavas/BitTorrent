@@ -120,15 +120,20 @@ public class MetaInfoFile {
         return infoMap.get("piece length").getInt();
     }
 
-    public String getPieces() throws BencodeFormatException
+    public byte[] getPieces() throws BencodeFormatException
     {
         Map<String,BencodeValue>infoMap=this.getInfoMap();
         Set<String> keySet=infoMap.keySet();
         if(!keySet.contains("pieces"))
         {
-            return "";
+            return null;
         }
-        return infoMap.get("piece length").getString();
+        return infoMap.get("pieces").getBytes();
+    }
+
+    public int getNumberOfPieces() throws BencodeFormatException
+    {
+        return this.getPieces().length/20;
     }
 
     public String getName() throws BencodeFormatException {

@@ -1,29 +1,39 @@
 package com.company;
 
+import com.company.Bencoding.BencodeFormatException;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.ServerSocket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class Manager extends Thread{
 
     private ArrayList<Peer> peers;
+    private ArrayList<Piece> pieces;
     private ServerSocket socket = null;
     private Tracker track;
-    private File file;
+    private File outputFile;
+    private File outputDirectory; //Output directory to which intermediate pieces will be stored, and subsequently resulting file
     private LinkedBlockingDeque<PeerMessage> messages = null;
     private boolean isRunning = false;
     private boolean[] currBitfield;
     private static boolean fullFile = false;
+
     private int[] pieceRepeating;
 
     Manager(ArrayList<Peer> peers, Tracker track, File file){
         this.peers = peers;
         this.track = track;
-        this.file = file;
+        this.outputFile =file;
     }
+
+
 
     //counting how many peers have the piece that we need - for each piece
     public void pieceRepeating(){
@@ -52,6 +62,8 @@ public class Manager extends Thread{
                 }
             }
         }
+        if(minI==pieceRepeating.length)
+            return -1;
         return pieceRepeating[minI];
     }
 
@@ -67,6 +79,11 @@ public class Manager extends Thread{
             int numOfPieces;
             int pieceLength = peerMessage.getPeer().getPeerInfo().getTracker().getMetaInfoFile().getPieceLength();
             int fileLength = peerMessage.getPeer().getPeerInfo().getTracker().getMetaInfoFile().getFileLength();
+
+             /*pieceLength=this.track.getMetaInfoFile().getPieceLength();
+             numOfPieces=this.track.getMetaInfoFile().getNumberOfPieces();
+
+              */
             if(fileLength%pieceLength != 0)
                 numOfPieces = fileLength / pieceLength + 1;
             else
@@ -181,8 +198,9 @@ public class Manager extends Thread{
         this.messages.add(message);
     }
 
+
     public byte[] readFile(int index,int offset,int length) throws IOException{
-        RandomAccessFile file = new RandomAccessFile(this.file,"r");
+        RandomAccessFile file = new RandomAccessFile(this.outputFile,"r");
         byte[] data =  new byte[length];
 
         file.seek(this.track.getMetaInfoFile().getPieceLength() * index + offset);

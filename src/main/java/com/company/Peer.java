@@ -148,7 +148,7 @@ public class Peer {
             if(!checkHandhshake(this.peerInfo.getTracker().getInfoHashBytes(), response))
                 return false;
             peerInfo.setHandshake(true);
-            out.flush();
+            //out.flush();
             System.out.println("Socket created!");
             return true;
         } catch(IOException e){

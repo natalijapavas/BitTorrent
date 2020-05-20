@@ -64,7 +64,6 @@ public class Main {
             for(String key:document.getInfoMap().keySet()) {
                 System.out.println(key);
             }
-
             System.out.println("Info hash is: "+document.getInfoHashHex());
             Tracker tracker=new Tracker(document);
             System.out.println("************************************Testing http tracker requests*************************************");
@@ -72,11 +71,13 @@ public class Main {
             Map<String,BencodeValue> bencodeMap=bencodeHttpResponse.getMap();
             System.out.println("Response type: "+bencodeHttpResponse.getValueType());
             System.out.println("*******************************Showing key set of httpResponse***************************************");
+
             for(Map.Entry e:bencodeMap.entrySet())
             {
                 System.out.println((String)e.getKey());
             }
             System.out.println("********************************Extraction and connection to peers*********************************** ");
+
             List<BencodeValue> peerList=bencodeMap.get("peers").getList();
             PeerInfo testPeerInfo=new PeerInfo(null,0,null, null);
             for(BencodeValue value:peerList)
@@ -95,6 +96,7 @@ public class Main {
             //testPeer.
 
             System.out.println("************************************Testing Message class *******************************************");
+
             byte[] block=new byte[10];
             for (int i = 0; i < block.length; i++) {
                 block[i]=(byte) i;
