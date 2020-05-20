@@ -107,7 +107,6 @@ public class Peer {
 
     //connect to a peer
     public  boolean createSocket() throws IOException{
-        System.out.println("create");
         try{
             this.socket = new Socket(this.peerInfo.getIp(),this.peerInfo.getPort());
             byte[] handshake = this.handshake(this.peerInfo.getTracker());

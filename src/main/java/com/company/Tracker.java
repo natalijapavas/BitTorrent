@@ -14,7 +14,7 @@ import java.util.Random;
 https://web.archive.org/web/20200225211151/http://www.bittorrent.org/beps/bep_0012.html
  */
 
-public class Tracker {
+public class Tracker implements Runnable{
     private MetaInfoFile metaInfoFile;
     private byte[] peerId;
     private int port;
@@ -23,6 +23,14 @@ public class Tracker {
         this.metaInfoFile=metaInfoFile;
         this.peerId=generatePeerId();
         this.port=generatePortNumber();
+    }
+
+    @Override
+    public void run() {
+        while(true)
+        {
+            BencodeValue httpResponse=sendHTTPAnnounceRequest();
+        }
     }
 
     public String getInfoHash()
@@ -237,5 +245,6 @@ public class Tracker {
             }
         }
     }
+
 
 }
