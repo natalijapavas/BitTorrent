@@ -36,6 +36,12 @@ public class Piece {
     }
 
 
+    //is size length?
+    public int getPieceLength(){
+        return this.size;
+    }
+
+
     public void addBlock(DataBlock block, int position)
     {
         this.dataBlocks.add(position,block);

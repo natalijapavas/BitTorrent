@@ -3,6 +3,7 @@ package com.company;
 import com.company.Bencoding.BencodeFormatException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.ServerSocket;
@@ -24,6 +25,9 @@ public class Manager extends Thread{
     private boolean isRunning = false;
     private boolean[] currBitfield;
     private static boolean fullFile = false;
+    private Path pathToPieces;
+    private int downloaded = 0;
+    private boolean isDownloading;
 
     private int[] pieceRepeating;
 
@@ -31,8 +35,29 @@ public class Manager extends Thread{
         this.peers = peers;
         this.track = track;
         this.outputFile =file;
+
+        /*
+
+        //making a folder for pieces
+        boolean success = new File("C:\\Pieces").mkdir();
+        if(!success)
+            System.out.println("Failed to create directory!");
+        this.pathToPieces = Paths.get("C:\\Pieces");
+
+
+         */
     }
 
+    //may need datablock -> data in Piece?
+    public void addPiece(Piece piece,byte[] data) throws IOException {
+        RandomAccessFile f = new RandomAccessFile(this.outputFile,"rws");
+
+        f.seek(piece.getPieceLength() * piece.getPieceIndex());
+        f.write(data);
+        f.close();
+        System.out.println("saved piece" + piece.getPieceIndex());
+        downloaded += piece.getPieceLength();
+    }
 
     public void run(){
         while(this.isRunning == true){
@@ -44,6 +69,13 @@ public class Manager extends Thread{
         }
     }
 
+    public boolean isDownloading() {
+        return isDownloading;
+    }
+
+    public void setIsDownloading(){
+        isDownloading = false;
+    }
 
     public int getRarest(Peer peer){
         pieceRepeating();
@@ -75,6 +107,10 @@ public class Manager extends Thread{
                 }
             }
         }
+    }
+
+    public boolean[] getCurrBitfield(){
+        return currBitfield;
     }
 
 
