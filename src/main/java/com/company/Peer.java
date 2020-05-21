@@ -187,4 +187,8 @@ public class Peer {
         this.getPeerInfo().setChockingPeer(false);
     }
 
+    @Override
+    public String toString() {
+        return "Peer:name: "+this.peerInfo.getName()+", ip: "+this.peerInfo.getIp();
+    }
 }

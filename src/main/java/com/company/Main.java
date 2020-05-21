@@ -54,6 +54,7 @@ public class Main {
 
         System.out.println("***************************Bencode testing uspesan!****************************************\n");
 
+
         System.out.println("************************* Let the Hunger Games begin ****************************************");
 
         try (FileInputStream inputStream = new FileInputStream(torrentFile))
@@ -61,10 +62,11 @@ public class Main {
             MetaInfoFile document=new MetaInfoFile();
             document.readFileContent(inputStream);
 
+
             System.out.println("Key set: ");
             for(String key:document.fileContent.keySet()) {
                 System.out.println(key);
-            }
+            } /*
             System.out.println("Info Key set: ");
             for(String key:document.getInfoMap().keySet()) {
                 System.out.println(key);
@@ -134,11 +136,22 @@ public class Main {
             /*for(int i=0; i<result.getBitfield().length; i++)
             {
                 System.out.println("El :" +i+" "+result.getBitfield()[i]);
-            } */
+            }
             fileInputStream.close();
-            testIn.close();
+            testIn.close(); */
 
-        } catch (IOException e) {
+            System.out.println("**************************** Testing parallel tracker working ***************************");
+            Tracker tracker=new Tracker(document);
+            new Thread(tracker).start();
+            while(true)
+            {
+                Thread.sleep(100000);
+                System.out.println("Lokalna test petlja");
+            }
+
+
+
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 

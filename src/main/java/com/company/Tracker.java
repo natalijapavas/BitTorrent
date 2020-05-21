@@ -14,6 +14,8 @@ import java.util.Random;
  */
 
 public class Tracker implements Runnable{
+    enum Event{STARTED,STOPPED,COMPLETED,DOWNLOADING};
+
     private MetaInfoFile metaInfoFile;
     private byte[] peerId;
     private int port;
@@ -22,16 +24,15 @@ public class Tracker implements Runnable{
     private int uploaded;
     private int announceInterval;
     private ArrayList<Peer> peerList;
-    //This probably also needs to be added
-    //private boolean isStarted;
-    //private boolean isStopped;
-    //private boolean isDownloading;
+    private Event event;
+
 
 
     public Tracker(MetaInfoFile metaInfoFile) throws IOException {
         this.metaInfoFile=metaInfoFile;
         this.peerId=generatePeerId();
         this.port=generatePortNumber();
+        this.event=Event.STARTED;
         this.announceInterval=0;
         this.downloaded=0;
         this.uploaded=0;
@@ -42,7 +43,7 @@ public class Tracker implements Runnable{
     public void run() {
         try {
             while (true) {
-                Thread.sleep(announceInterval);
+                Thread.sleep(5000);
                 BencodeValue httpResponse = this.sendHTTPAnnounceRequest();
                 this.parseResponse(httpResponse);
             }
@@ -146,7 +147,7 @@ public class Tracker implements Runnable{
         strBuffer.append('&');
         strBuffer.append(URLEncoder.encode("left", "UTF-8"));
         strBuffer.append('=');
-        strBuffer.append(URLEncoder.encode(Integer.toString(this.metaInfoFile.getFileLength()), "UTF-8")); //left to download
+        strBuffer.append(URLEncoder.encode(Integer.toString(this.metaInfoFile.getFileLength()-this.downloaded), "UTF-8")); //left to download
 
         strBuffer.append('&');
         strBuffer.append(URLEncoder.encode("compact", "UTF-8"));
@@ -158,10 +159,7 @@ public class Tracker implements Runnable{
         strBuffer.append('=');
         strBuffer.append(URLEncoder.encode("0", "UTF-8"));
 
-        strBuffer.append('&');
-        strBuffer.append(URLEncoder.encode("event", "UTF-8"));
-        strBuffer.append('=');
-        strBuffer.append(URLEncoder.encode("started", "UTF-8"));
+        strBuffer=appendEvent(strBuffer);
 
         strBuffer=appendTrackerID(strBuffer);
         return strBuffer.toString();
@@ -176,6 +174,9 @@ public class Tracker implements Runnable{
             Map<String,BencodeValue> bencodeMap= bencodeHttpResponse.getMap();
             this.announceInterval=bencodeMap.get("interval").getInt();
             this.announceInterval*=1000;
+            setTrackerID(bencodeHttpResponse);
+            //System.out.println("Tracker id: "+this.trackerID.toString());
+            this.peerList.stream().forEach(System.out::println);
         }
         catch (BencodeFormatException e) {
             e.printStackTrace();
@@ -252,9 +253,12 @@ public class Tracker implements Runnable{
         return uploaded;
     }
 
+    public void setEvent(Event event) { this.event=event; }
+
+
     private void setTrackerID(BencodeValue bencodeHttpResponse)
     {
-        if(trackerID.length!=0) //if trackerId is alrady set, do not change it
+        if(trackerID!=null) //if trackerId is alrady set, do not change it
             return;
         String trackerIdKey="trackerid";
         try {
@@ -271,12 +275,22 @@ public class Tracker implements Runnable{
     }
 
     private StringBuffer appendTrackerID(StringBuffer strBuffer) throws UnsupportedEncodingException {
-        if(this.trackerID.length==0)
+        if(this.trackerID==null || this.trackerID.length==0)
             return  strBuffer;
         strBuffer.append('&');
         strBuffer.append(URLEncoder.encode("trackerid", "UTF-8"));
         strBuffer.append('=');
         strBuffer.append(urlEncode(this.trackerID));
+        return strBuffer;
+    }
+
+    private StringBuffer appendEvent(StringBuffer strBuffer) throws UnsupportedEncodingException {
+        if(this.event==Event.DOWNLOADING)
+            return strBuffer;
+        strBuffer.append('&');
+        strBuffer.append(URLEncoder.encode("event", "UTF-8"));
+        strBuffer.append('=');
+        strBuffer.append(URLEncoder.encode(this.event.name().toLowerCase(), "UTF-8"));
         return strBuffer;
     }
 
