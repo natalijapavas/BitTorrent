@@ -34,18 +34,16 @@ public class Manager extends Thread{
     }
 
 
-
-    //counting how many peers have the piece that we need - for each piece
-    public void pieceRepeating(){
-        for(Peer p: this.peers){
-            for(int i = 0; i < this.pieceRepeating.length; i++){
-                //we count instances of the pieces that we need
-                if(p.getBitfield()[i] == true){
-                    this.pieceRepeating[i]++;
-                }
+    public void run(){
+        while(this.isRunning == true){
+            try{
+                parse();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
+
 
     public int getRarest(Peer peer){
         pieceRepeating();
@@ -67,7 +65,17 @@ public class Manager extends Thread{
         return pieceRepeating[minI];
     }
 
-
+    //counting how many peers have the piece that we need - for each piece
+    public void pieceRepeating(){
+        for(Peer p: this.peers){
+            for(int i = 0; i < this.pieceRepeating.length; i++){
+                //we count instances of the pieces that we need
+                if(p.getBitfield()[i] == true){
+                    this.pieceRepeating[i]++;
+                }
+            }
+        }
+    }
 
 
     //decoding messages recieved from the peers
@@ -173,15 +181,7 @@ public class Manager extends Thread{
 
     }
 
-    public void run(){
-        while(this.isRunning == true){
-            try{
-                parse();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+
 
     public boolean fileComplete(){
         for(int i = 0; i < this.currBitfield.length; i++){

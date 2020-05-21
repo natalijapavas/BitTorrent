@@ -22,7 +22,7 @@ import java.util.*;
 
 
 public class MetaInfoFile {
-    private Map<String, BencodeValue> fileContent;
+    public Map<String, BencodeValue> fileContent;
     private char fileMode='n'; //s for single file, m for multiple, n for none
     private byte[] infoHash;
     private String infoHashHex;

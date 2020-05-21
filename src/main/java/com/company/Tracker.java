@@ -11,40 +11,49 @@ import java.util.Map;
 import java.util.Random;
 
 /* Todo verovatno treba recovery code u slucaju da URL konekcija ne uspe
-https://web.archive.org/web/20200225211151/http://www.bittorrent.org/beps/bep_0012.html
  */
 
 public class Tracker implements Runnable{
     private MetaInfoFile metaInfoFile;
     private byte[] peerId;
     private int port;
+    private byte[] trackerID;
+    private int downloaded;
+    private int uploaded;
+    private int announceInterval;
+    private ArrayList<Peer> peerList;
+    //This probably also needs to be added
+    //private boolean isStarted;
+    //private boolean isStopped;
+    //private boolean isDownloading;
+
 
     public Tracker(MetaInfoFile metaInfoFile) throws IOException {
         this.metaInfoFile=metaInfoFile;
         this.peerId=generatePeerId();
         this.port=generatePortNumber();
+        this.announceInterval=0;
+        this.downloaded=0;
+        this.uploaded=0;
+        this.trackerID=null;
     }
 
     @Override
     public void run() {
-        while(true)
-        {
-            BencodeValue httpResponse=sendHTTPAnnounceRequest();
+        try {
+            while (true) {
+                Thread.sleep(announceInterval);
+                BencodeValue httpResponse = this.sendHTTPAnnounceRequest();
+                this.parseResponse(httpResponse);
+            }
+        }catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
-    public String getInfoHash()
-    {
-        return new String(this.metaInfoFile.getInfoHash(),StandardCharsets.UTF_8);
-    }
 
-    public byte[] getInfoHashBytes(){return this.metaInfoFile.getInfoHash();}
 
-    public int getPort() {
-        return port;
-    }
-
-    //URL should look like: https://torrent.ubuntu.com/announce?info_hash=%9A%813%3C%1B%16%E4%A8%3C%10%F3%05%2C%15%90%AA%DF%5E.%20&peer_id=ABCDEFGHIJKLMNOPQRST&port=6881&uploaded=0&downloaded=0&left=727955456&event=started&numwant=100&no_peer_id=1&compact=1
+    //Example URL: https://torrent.ubuntu.com/announce?info_hash=%9A%813%3C%1B%16%E4%A8%3C%10%F3%05%2C%15%90%AA%DF%5E.%20&peer_id=ABCDEFGHIJKLMNOPQRST&port=6881&uploaded=0&downloaded=0&left=727955456&event=started&numwant=100&no_peer_id=1&compact=1
     public BencodeValue sendHTTPAnnounceRequest()
     {
         BencodeValue response=null;
@@ -54,7 +63,7 @@ public class Tracker implements Runnable{
                 return null; //Add exceptions and recovery code maybe
 
             System.out.println("Url string to which request is sent:"+ urlString);
-            URL url=new URL(urlString.toString());
+            URL url=new URL(urlString);
             HttpURLConnection connection=(HttpURLConnection)url.openConnection();
             connection.setRequestMethod("GET");
             int responseCode=connection.getResponseCode();
@@ -75,16 +84,7 @@ public class Tracker implements Runnable{
     }
 
 
-    public byte[] getPeerId() {
-        return peerId;
-    }
-
-    public boolean isOurTorrentClient(String peerID)
-    {
-        return peerID.compareTo(this.peerId.toString())==0;
-    }
-
-    private byte[] generatePeerId() throws IOException //mozda ne treba kao hex?
+    private byte[] generatePeerId() throws IOException
     {
         final int ID_SIZE=20;
         final int RANDOM_ARRAY_SIZE=16;
@@ -98,7 +98,6 @@ public class Tracker implements Runnable{
     randomGenerator.nextBytes(randomBytes);
     byteBuffer.write(randomBytes);
     return byteBuffer.toByteArray();
-    //return bytes;
     }
 
 
@@ -112,8 +111,6 @@ public class Tracker implements Runnable{
 
         strBuffer.append(URLEncoder.encode("info_hash", "UTF-8"));
         strBuffer.append("=");
-        //String hash=new String(this.metaInfoFile.getInfoHash(), StandardCharsets.UTF_8);
-        //strBuffer.append(URLEncoder.encode(hash, "UTF-8"));
         strBuffer.append(urlEncode(this.metaInfoFile.getInfoHash()));
 
         strBuffer.append('&');
@@ -136,12 +133,15 @@ public class Tracker implements Runnable{
         strBuffer.append('&');
         strBuffer.append(URLEncoder.encode("uploaded", "UTF-8"));
         strBuffer.append('=');
-        strBuffer.append(URLEncoder.encode("0", "UTF-8")); //uploaded
+        //strBuffer.append(URLEncoder.encode("0", "UTF-8")); //uploaded
+        strBuffer.append(URLEncoder.encode(new Integer(this.uploaded).toString(), "UTF-8")); //uploaded
 
         strBuffer.append('&');
         strBuffer.append(URLEncoder.encode("downloaded", "UTF-8"));
         strBuffer.append('=');
-        strBuffer.append(URLEncoder.encode("0", "UTF-8")); //downloaded
+        //strBuffer.append(URLEncoder.encode("0", "UTF-8")); //downloaded
+        strBuffer.append(URLEncoder.encode(new Integer(this.downloaded).toString(), "UTF-8")); //downloaded
+
 
         strBuffer.append('&');
         strBuffer.append(URLEncoder.encode("left", "UTF-8"));
@@ -162,14 +162,38 @@ public class Tracker implements Runnable{
         strBuffer.append(URLEncoder.encode("event", "UTF-8"));
         strBuffer.append('=');
         strBuffer.append(URLEncoder.encode("started", "UTF-8"));
+
+        strBuffer=appendTrackerID(strBuffer);
         return strBuffer.toString();
     }
 
-    public MetaInfoFile getMetaInfoFile() {
-        return metaInfoFile;
+
+    public void parseResponse(BencodeValue bencodeHttpResponse)
+    {
+        try {
+            this.peerList=generatePeerList(bencodeHttpResponse);
+            //setTrackerID(bencodeHttpResponse)
+            Map<String,BencodeValue> bencodeMap= bencodeHttpResponse.getMap();
+            this.announceInterval=bencodeMap.get("interval").getInt();
+            this.announceInterval*=1000;
+        }
+        catch (BencodeFormatException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
-    public ArrayList<Peer> generatePeerList(BencodeValue bencodeHttpResponse)
+
+
+    public byte[] getPeerId() {
+        return peerId;
+    }
+
+    private boolean isOurTorrentClient(String peerID) { return peerID.contains("-ND-"); }
+
+
+    private ArrayList<Peer> generatePeerList(BencodeValue bencodeHttpResponse)
     {
         ArrayList<Peer> peerList=new ArrayList<>();
             try {
@@ -193,6 +217,67 @@ public class Tracker implements Runnable{
                 e.printStackTrace();
             }
         return null;
+    }
+
+    public String getInfoHash()
+    {
+        return new String(this.metaInfoFile.getInfoHash(),StandardCharsets.UTF_8);
+    }
+
+    public byte[] getInfoHashBytes(){return this.metaInfoFile.getInfoHash();}
+
+    public int getPort() {
+        return port;
+    }
+
+    public MetaInfoFile getMetaInfoFile() {
+        return metaInfoFile;
+    }
+
+    public void incrementDownloaded(int downloaded)
+    {
+        this.downloaded+=downloaded;
+    }
+
+    public void incrementUploaded(int uploaded)
+    {
+        this.uploaded+=uploaded;
+    }
+
+    public int getDownloaded() {
+        return downloaded;
+    }
+
+    public int getUploaded() {
+        return uploaded;
+    }
+
+    private void setTrackerID(BencodeValue bencodeHttpResponse)
+    {
+        if(trackerID.length!=0) //if trackerId is alrady set, do not change it
+            return;
+        String trackerIdKey="trackerid";
+        try {
+            //setTrackerID(bencodeHttpResponse)
+            Map<String,BencodeValue> bencodeMap= bencodeHttpResponse.getMap();
+            if(bencodeMap.keySet().contains(trackerIdKey))
+            {
+                this.trackerID=bencodeMap.get(trackerIdKey).getBytes();
+            }
+        }
+        catch (BencodeFormatException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private StringBuffer appendTrackerID(StringBuffer strBuffer) throws UnsupportedEncodingException {
+        if(this.trackerID.length==0)
+            return  strBuffer;
+        strBuffer.append('&');
+        strBuffer.append(URLEncoder.encode("trackerid", "UTF-8"));
+        strBuffer.append('=');
+        strBuffer.append(urlEncode(this.trackerID));
+        return strBuffer;
     }
 
     private static String urlEncode(byte[] binary) {

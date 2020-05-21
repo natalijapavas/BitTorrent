@@ -10,10 +10,10 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
         //Linkovi za Testiranje
-        String path="/home/korisnik/Desktop/torrents/KNOPPIX_V7.7.1DVD-2016-10-22-EN.torrent";
+        //String path="/home/korisnik/Desktop/torrents/KNOPPIX_V7.7.1DVD-2016-10-22-EN.torrent";
         //String path="/home/korisnik/Desktop/torrents/VISB tablice.pdf.torrent";
         //String path="/home/korisnik/Desktop/torrents/learning_curve-highvariance.png.torrent";
-        //String path="/home/korisnik/Desktop/torrents/Nacrtna geometrija - Zagorka Snajder.pdf.torrent";
+        String path="/home/korisnik/Desktop/torrents/Nacrtna geometrija - Zagorka Snajder.pdf.torrent";
         //String path="/home/korisnik/Desktop/torrents/Metodika-nastave-Zadaci-6-poena-1.docx.torrent";
 
 
@@ -60,13 +60,21 @@ public class Main {
         {
             MetaInfoFile document=new MetaInfoFile();
             document.readFileContent(inputStream);
+
+            System.out.println("Key set: ");
+            for(String key:document.fileContent.keySet()) {
+                System.out.println(key);
+            }
             System.out.println("Info Key set: ");
             for(String key:document.getInfoMap().keySet()) {
                 System.out.println(key);
             }
+            System.out.println("BITNOOOOO!: "+document.getFileLength());
+            System.out.println("BITNOOOO!: "+document.getNumberOfPieces());
             System.out.println("Info hash is: "+document.getInfoHashHex());
-            Tracker tracker=new Tracker(document);
+
             System.out.println("************************************Testing http tracker requests*************************************");
+            Tracker tracker=new Tracker(document);
             BencodeValue bencodeHttpResponse=tracker.sendHTTPAnnounceRequest();
             Map<String,BencodeValue> bencodeMap=bencodeHttpResponse.getMap();
             System.out.println("Response type: "+bencodeHttpResponse.getValueType());
