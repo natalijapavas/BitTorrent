@@ -2,10 +2,7 @@ package com.company;
 
 import com.company.Bencoding.BencodeFormatException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,12 +46,40 @@ public class Manager extends Thread{
     }
 
     //may need datablock -> data in Piece?
-    public void addPiece(Piece piece,byte[] data) throws IOException {
-        RandomAccessFile f = new RandomAccessFile(this.outputFile,"rws");
+    public void addPiece(Piece piece) throws IOException {
+        /*RandomAccessFile f = new RandomAccessFile(this.outputFile,"rws");
 
         f.seek(piece.getPieceLength() * piece.getPieceIndex());
         f.write(data);
         f.close();
+        */
+
+        int num_of_digits=0;
+        int index = piece.getPieceIndex();
+        for(int i = 0; i < piece.getPieceIndex(); i++){
+            if(index > 10) {
+                index = index / 10;
+                num_of_digits++;
+            }
+            else
+                break;
+        }
+        String zeros = "";
+        for(int i = 0; i < piece.getPieceLength() - num_of_digits; i++){
+            zeros = "0" + zeros;
+        }
+        String path = this.pathToPieces + zeros + piece.getPieceIndex() + "piece";
+        File file = new File(path,"w");
+        boolean result = file.createNewFile();
+        if(!result)
+            System.out.println("File already exists");
+
+        RandomAccessFile raf = new RandomAccessFile(path,"w");
+        for(int i = 0; i < piece.getDataBlocks().size(); i++) {
+            byte[] data = piece.getDataBlocks().get(i).getBlock();
+            raf.write(data);
+        }
+        raf.close();
         System.out.println("saved piece" + piece.getPieceIndex());
         downloaded += piece.getPieceLength();
     }
