@@ -43,7 +43,7 @@ public class Tracker implements Runnable{
     public void run() {
         try {
             while (true) {
-                Thread.sleep(5000);
+                Thread.sleep(this.announceInterval);
                 BencodeValue httpResponse = this.sendHTTPAnnounceRequest();
                 this.parseResponse(httpResponse);
             }
@@ -51,7 +51,6 @@ public class Tracker implements Runnable{
             e.printStackTrace();
         }
     }
-
 
 
     //Example URL: https://torrent.ubuntu.com/announce?info_hash=%9A%813%3C%1B%16%E4%A8%3C%10%F3%05%2C%15%90%AA%DF%5E.%20&peer_id=ABCDEFGHIJKLMNOPQRST&port=6881&uploaded=0&downloaded=0&left=727955456&event=started&numwant=100&no_peer_id=1&compact=1
@@ -254,7 +253,6 @@ public class Tracker implements Runnable{
     }
 
     public void setEvent(Event event) { this.event=event; }
-
 
     private void setTrackerID(BencodeValue bencodeHttpResponse)
     {
