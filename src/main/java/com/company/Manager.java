@@ -65,7 +65,7 @@ public class Manager extends Thread{
                 break;
         }
         String zeros = "";
-        for(int i = 0; i < track.getMetaInfoFile().getNumberOfPieces()- num_of_digits; i++){
+        for(int i = 0; i < this.track.getMetaInfoFile().getNumberOfPieces()- num_of_digits; i++){
             zeros = "0" + zeros;
         }
         String path = this.pathToPieces + zeros + piece.getPieceIndex() + "piece";
