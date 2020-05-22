@@ -41,6 +41,10 @@ public class Piece {
         return this.size;
     }
 
+    public  ArrayList<DataBlock> getDataBlocks(){
+        return dataBlocks;
+    }
+
 
     public void addBlock(DataBlock block, int position)
     {
