@@ -218,8 +218,7 @@ public class Manager extends Thread{
     }
 
 
-
-    public boolean fileComplete(){
+    public boolean isFileComplete(){
         for(int i = 0; i < this.currBitfield.length; i++){
             if(this.currBitfield[i] == false)
                 return false;

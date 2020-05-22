@@ -1,7 +1,7 @@
 package com.company;
 
 import java.io.File;
-//Add to the class all relevent info that GUI will be using such as progress ba, download rate, torrent info etc.
+//Add to the class all relevant info that GUI will be using such as progress ba, download rate, torrent info etc.
 public class Client {
 
     //in command line we get 2 args - torrent file and output file
