@@ -227,9 +227,7 @@ public class Manager extends Thread{
                     }
 
                      */
-
-
-
+                    
                     break;
                 case Message.cancelID:
                     break;
