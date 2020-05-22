@@ -176,7 +176,7 @@ public class Tracker implements Runnable{
             this.announceInterval*=1000;
             setTrackerID(bencodeHttpResponse);
             //System.out.println("Tracker id: "+this.trackerID.toString());
-            this.peerList.stream().forEach(System.out::println);
+            //this.peerList.stream().forEach(System.out::println);
         }
         catch (BencodeFormatException e) {
             e.printStackTrace();
@@ -194,7 +194,7 @@ public class Tracker implements Runnable{
     private boolean isOurTorrentClient(String peerID) { return peerID.contains("-ND-"); }
 
 
-    private ArrayList<Peer> generatePeerList(BencodeValue bencodeHttpResponse)
+    public ArrayList<Peer> generatePeerList(BencodeValue bencodeHttpResponse)
     {
         ArrayList<Peer> peerList=new ArrayList<>();
             try {

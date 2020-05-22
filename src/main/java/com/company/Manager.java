@@ -5,16 +5,18 @@ import com.company.Bencoding.BencodeFormatException;
 import java.io.*;
 import java.net.ServerSocket;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class Manager extends Thread{
 
     private ArrayList<Peer> peers;
     private ArrayList<Piece> pieces;
-    private ServerSocket socket = null;
+    private ServerSocket socket;
     private Tracker track;
     private File outputFile;
     private File outputDirectory; //Output directory to which intermediate pieces will be stored, and subsequently resulting file
@@ -22,31 +24,52 @@ public class Manager extends Thread{
     private boolean isRunning = false;
     private boolean[] currBitfield;
     private static boolean fullFile = false;
-    private Path pathToPieces;
-    private int downloaded = 0;
+    private Path directoryPath;
     private boolean isDownloading;
-
+    private int downloaded;
     private int[] pieceRepeating;
 
-    Manager(ArrayList<Peer> peers, Tracker track, File file){
+    public Manager(ArrayList<Peer> peers, Tracker track, File file){
         this.peers = peers;
         this.track = track;
         this.outputFile =file;
+        this.downloaded=0;
 
-        /*
-
-        //making a folder for pieces
-        boolean success = new File("C:\\Pieces").mkdir();
-        if(!success)
-            System.out.println("Failed to create directory!");
-        this.pathToPieces = Paths.get("C:\\Pieces");
-
-
-         */
+        try {
+            this.directoryPath=Paths.get(System.getProperty("user.home"),this.track.getMetaInfoFile().getName());
+            if(!Files.exists(directoryPath)) { Files.createDirectory(directoryPath); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    //may need datablock -> data in Piece?
-    public void addPiece(Piece piece) throws IOException {
+    public Manager(ArrayList<Peer> peers, Tracker track){
+        this.peers = peers;
+        this.track = track;
+        this.downloaded=0;
+        try {
+            this.directoryPath=Paths.get(System.getProperty("user.home"),this.track.getMetaInfoFile().getName());
+            if(!Files.exists(this.directoryPath)) { Files.createDirectory(this.directoryPath); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Manager(ArrayList<Peer> peers, Tracker track,String directoryPath){
+        this.peers = peers;
+        this.track = track;
+        this.downloaded=0;
+        try {
+            this.directoryPath=Files.createDirectory(Paths.get(directoryPath,this.track.getMetaInfoFile().getName()));
+            if(!Files.exists(this.directoryPath)) { Files.createDirectory(this.directoryPath); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void writePiece(Piece piece) throws IOException {
         /*RandomAccessFile f = new RandomAccessFile(this.outputFile,"rws");
 
         f.seek(piece.getPieceLength() * piece.getPieceIndex());
@@ -54,38 +77,77 @@ public class Manager extends Thread{
         f.close();
         */
 
-        int num_of_digits=0;
+        int max_num_of_digits=0;
+        int index_num_of_digits=0;
         int index = piece.getPieceIndex();
-        for(int i = 0; i < piece.getPieceIndex(); i++){
+        int maxIndex=this.track.getMetaInfoFile().getNumberOfPieces();
+
+        /*for(int i = 0; i < piece.getPieceIndex(); i++){
             if(index > 10) {
                 index = index / 10;
                 num_of_digits++;
             }
             else
                 break;
+        } */
+        while(maxIndex>0 || index>0)
+        {
+            maxIndex/=10;
+            index/=10;
+            max_num_of_digits++;
+            index_num_of_digits++;
         }
-        String zeros = "";
-        for(int i = 0; i < this.track.getMetaInfoFile().getNumberOfPieces()- num_of_digits; i++){
-            zeros = "0" + zeros;
-        }
-        String path = this.pathToPieces + zeros + piece.getPieceIndex() + "piece";
-        File file = new File(path,"w");
-        boolean result = file.createNewFile();
-        if(!result)
-            System.out.println("File already exists");
+        max_num_of_digits++; //increase by one to always have a leading zero in the name;
 
-        RandomAccessFile raf = new RandomAccessFile(path,"w");
-        for(int i = 0; i < piece.getDataBlocks().size(); i++) {
-            byte[] data = piece.getDataBlocks().get(i).getBlock();
-            raf.write(data);
+        char zeros[]=new char[max_num_of_digits-index_num_of_digits];
+        Arrays.fill(zeros,'0');
+        //StringBuilder zeros= new StringBuilder();
+        //for(int i = 0; i < this.track.getMetaInfoFile().getNumberOfPieces()- num_of_digits; i++){
+        //    zeros.insert(0, "0");
+        //}
+        StringBuilder fileNameBuilder=new StringBuilder();
+        fileNameBuilder.append(zeros);
+        fileNameBuilder.append(piece.getPieceIndex());
+        fileNameBuilder.append("_piece");
+
+        try{
+            Path filePath=Paths.get(this.directoryPath.toString(),fileNameBuilder.toString());
+            //String path = this.pathToPieces + zeros.toString() + piece.getPieceIndex() + "piece";
+            if(Files.exists(filePath) && Files.isRegularFile(filePath))
+            {
+                System.out.println("File already exists");
+                return;
+            }
+            /*File file = new File(filePath);
+            boolean result = file.createNewFile();
+            if (!result)
+                System.out.println("File already exists");
+
+            RandomAccessFile raf = new RandomAccessFile(path, "w"); */
+            File outputPieceFile=new File(filePath.toString());
+            FileOutputStream fileOutputStream=new FileOutputStream(outputPieceFile);
+            piece.getDataBlocks().stream().map(DataBlock::getBlock).forEach(b -> {
+                try {
+                    fileOutputStream.write(b);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            /*for (int i = 0; i < piece.getDataBlocks().size(); i++) {
+                byte[] data = piece.getDataBlocks().get(i).getBlock();
+                raf.write(data);
+            } */
+            fileOutputStream.close();
+            //raf.close();
+            System.out.println("saved piece" + piece.getPieceIndex());
+            downloaded += piece.getPieceLength();
         }
-        raf.close();
-        System.out.println("saved piece" + piece.getPieceIndex());
-        downloaded += piece.getPieceLength();
+        catch (InvalidPathException e) { e.printStackTrace(); }
+        catch(IOException e) { e.printStackTrace(); }
     }
 
     public void run(){
-        while(this.isRunning == true){
+        while(this.isRunning){
             try{
                 parse();
             } catch (Exception e) {
@@ -127,7 +189,7 @@ public class Manager extends Thread{
         for(Peer p: this.peers){
             for(int i = 0; i < this.pieceRepeating.length; i++){
                 //we count instances of the pieces that we need
-                if(p.getBitfield()[i] == true){
+                if(p.getBitfield()[i]){
                     this.pieceRepeating[i]++;
                 }
             }
@@ -242,8 +304,8 @@ public class Manager extends Thread{
 
 
     public boolean isFileComplete(){
-        for(int i = 0; i < this.currBitfield.length; i++){
-            if(this.currBitfield[i] == false)
+        for (boolean b : this.currBitfield) {
+            if (b == false)
                 return false;
         }
         return true;

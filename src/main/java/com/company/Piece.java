@@ -54,9 +54,8 @@ public class Piece {
     public boolean compareHashes(byte[] hash) throws IOException, NoSuchAlgorithmException {
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
         for(DataBlock block:dataBlocks)
-        {
-            baos.write(block.getBlock());
-        }
+            { baos.write(block.getBlock()); }
+
         MessageDigest digest=MessageDigest.getInstance("SHA-1");
         byte[] resultHash=digest.digest(baos.toByteArray());
         return Arrays.equals(resultHash,hash);

@@ -3,7 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="d2c03741-b4a7-4aa9-b815-2b3bc216bbfb" name="Default Changelist" comment="bencode update 2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Manager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Manager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Piece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Piece.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Tracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Tracker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/company/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/company/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/company/Manager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/company/Manager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/company/Piece.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/company/Piece.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/company/Tracker.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/company/Tracker.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,25 +158,25 @@
       <screen x="0" y="27" width="1920" height="996" />
     </state>
     <state x="1215" y="451" key="Github.CreateGistDialog/0.27.1920.996@0.27.1920.996" timestamp="1586023607177" />
-    <state width="1807" height="340" key="GridCell.Tab.0.bottom" timestamp="1590096411176">
+    <state width="1807" height="263" key="GridCell.Tab.0.bottom" timestamp="1590176849581">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1807" height="340" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1590096411176" />
+    <state width="1807" height="263" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1590176849581" />
     <state width="1803" height="210" key="GridCell.Tab.0.bottom/71.27.1849.1053@71.27.1849.1053" timestamp="1589187492475" />
-    <state width="1807" height="340" key="GridCell.Tab.0.center" timestamp="1590096411175">
+    <state width="1807" height="263" key="GridCell.Tab.0.center" timestamp="1590176849581">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1807" height="340" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1590096411175" />
+    <state width="1807" height="263" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1590176849581" />
     <state width="1803" height="210" key="GridCell.Tab.0.center/71.27.1849.1053@71.27.1849.1053" timestamp="1589187492474" />
-    <state width="1807" height="340" key="GridCell.Tab.0.left" timestamp="1590096411175">
+    <state width="1807" height="263" key="GridCell.Tab.0.left" timestamp="1590176849580">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1807" height="340" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1590096411175" />
+    <state width="1807" height="263" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1590176849580" />
     <state width="1803" height="210" key="GridCell.Tab.0.left/71.27.1849.1053@71.27.1849.1053" timestamp="1589187492474" />
-    <state width="1807" height="340" key="GridCell.Tab.0.right" timestamp="1590096411175">
+    <state width="1807" height="263" key="GridCell.Tab.0.right" timestamp="1590176849581">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1807" height="340" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1590096411175" />
+    <state width="1807" height="263" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1590176849581" />
     <state width="1803" height="210" key="GridCell.Tab.0.right/71.27.1849.1053@71.27.1849.1053" timestamp="1589187492474" />
     <state width="1807" height="340" key="GridCell.Tab.1.bottom" timestamp="1590096411177">
       <screen x="67" y="27" width="1853" height="1053" />
@@ -216,9 +223,9 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="657" y="252" width="672" height="677" key="run.anything.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1588335326251" />
-    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup" timestamp="1589984906026">
+    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup" timestamp="1590172119989">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1589984906026" />
+    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1590172119989" />
   </component>
 </project>

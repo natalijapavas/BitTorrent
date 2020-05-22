@@ -10,10 +10,10 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
         //Linkovi za Testiranje
-        //String path="/home/korisnik/Desktop/torrents/KNOPPIX_V7.7.1DVD-2016-10-22-EN.torrent";
+        String path="/home/korisnik/Desktop/torrents/KNOPPIX_V7.7.1DVD-2016-10-22-EN.torrent";
         //String path="/home/korisnik/Desktop/torrents/VISB tablice.pdf.torrent";
         //String path="/home/korisnik/Desktop/torrents/learning_curve-highvariance.png.torrent";
-        String path="/home/korisnik/Desktop/torrents/Nacrtna geometrija - Zagorka Snajder.pdf.torrent";
+        //String path="/home/korisnik/Desktop/torrents/Nacrtna geometrija - Zagorka Snajder.pdf.torrent";
         //String path="/home/korisnik/Desktop/torrents/Metodika-nastave-Zadaci-6-poena-1.docx.torrent";
 
 
@@ -51,7 +51,6 @@ public class Main {
         encoder.encode(arrayList);
         System.out.println("Test list:"+ outputStream.toString("UTF-8"));
         outputStream.close();
-
         System.out.println("***************************Bencode testing uspesan!****************************************\n");
 
 
@@ -66,12 +65,12 @@ public class Main {
             System.out.println("Key set: ");
             for(String key:document.fileContent.keySet()) {
                 System.out.println(key);
-            } /*
+            }
             System.out.println("Info Key set: ");
             for(String key:document.getInfoMap().keySet()) {
                 System.out.println(key);
             }
-            System.out.println("BITNOOOOO!: "+document.getFileLength());
+            System.out.println("BITNOOOO!: "+document.getFileLength());
             System.out.println("BITNOOOO!: "+document.getNumberOfPieces());
             System.out.println("Info hash is: "+document.getInfoHashHex());
 
@@ -123,6 +122,7 @@ public class Main {
             FileInputStream fileInputStream=new FileInputStream(testFile);
             DataInputStream testIn=new DataInputStream(fileInputStream);
             Message resutlMsg=Message.decode(testIn);
+            testIn.close();
             //System.out.println("Message id: "+resutlMsg.id);
             //Message.Request result=(Message.Request) resutlMsg;
             //System.out.println(result.len);
@@ -140,18 +140,57 @@ public class Main {
             fileInputStream.close();
             testIn.close(); */
 
-            System.out.println("**************************** Testing parallel tracker working ***************************");
+            /*System.out.println("**************************** Testing parallel tracker working ***************************");
             Tracker tracker=new Tracker(document);
             new Thread(tracker).start();
             while(true)
             {
                 Thread.sleep(100000);
                 System.out.println("Lokalna test petlja");
-            }
+            } */
+
+            System.out.println("**************************** Testing Example of file writing ***************************");
+            Manager testManager=new Manager(tracker.generatePeerList(bencodeHttpResponse),tracker);
+            Piece piece=new Piece(0);
+            ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+            byteArrayOutputStream.write(1);
+            byteArrayOutputStream.write(2);
+            byteArrayOutputStream.write(3);
+            byteArrayOutputStream.write(4);
+            byteArrayOutputStream.write(5);
+            byte[] testBytes=byteArrayOutputStream.toByteArray();
+            DataBlock dataBlock0=new DataBlock(0,0,testBytes,testBytes.length);
+            piece.addBlock(dataBlock0,0);
+
+            DataBlock dataBlock1=new DataBlock(0,1,testBytes,testBytes.length);
+            piece.addBlock(dataBlock1,1);
+
+            DataBlock dataBlock2=new DataBlock(0,2,testBytes,testBytes.length);
+            piece.addBlock(dataBlock2,2);
+
+            DataBlock dataBlock3=new DataBlock(0,3,testBytes,testBytes.length);
+            piece.addBlock(dataBlock3,3);
+
+            Piece piece1=new Piece(1);
+
+            piece1.addBlock(dataBlock0,0);
 
 
+            piece1.addBlock(dataBlock1,1);
 
-        } catch (IOException | InterruptedException e) {
+
+            piece1.addBlock(dataBlock2,2);
+
+
+            piece1.addBlock(dataBlock3,3);
+            testManager.writePiece(piece);
+            testManager.writePiece(piece1);
+
+        }
+        //catch (IOException | InterruptedException e) {
+        //    e.printStackTrace();
+        //}
+        catch(IOException e) {
             e.printStackTrace();
         }
 
