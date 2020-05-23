@@ -189,6 +189,10 @@ public class Message {
         }
     }
 
+    public int getId(){
+        return this.id;
+    }
+
 
     public static Message decode(DataInputStream dataIn) throws IOException {
         int length = dataIn.readInt();
