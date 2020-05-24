@@ -206,18 +206,7 @@ public class Manager extends Thread{
 
 
         if((peerMessage = this.messages.take()) != null){
-            int numOfPieces;
-            int pieceLength = peerMessage.getPeer().getPeerInfo().getTracker().getMetaInfoFile().getPieceLength();
-            int fileLength = peerMessage.getPeer().getPeerInfo().getTracker().getMetaInfoFile().getFileLength();
-
-             /*pieceLength=this.track.getMetaInfoFile().getPieceLength();
-             numOfPieces=this.track.getMetaInfoFile().getNumberOfPieces();
-
-              */
-            if(fileLength%pieceLength != 0)
-                numOfPieces = fileLength / pieceLength + 1;
-            else
-                numOfPieces = fileLength / pieceLength;
+            int numOfPieces = this.track.getMetaInfoFile().getNumberOfPieces();
             switch (peerMessage.getMessage().id){
                 case Message.keepAliveID:
                     peerMessage.getPeer().sendMessage(Message.KEEP_ALIVE);
@@ -241,10 +230,11 @@ public class Manager extends Thread{
                     peerMessage.getPeer().getPeerInfo().setHasPiece(haspiece);
                     break;
                 case Message.bitfieldID:
-
+                    System.out.println("Bitfield message");
                     Message.Bitfield BitMSG = (Message.Bitfield) peerMessage.getMessage();
                     byte[] bitfieldPayload = BitMSG.getBitfield();
                     //with this i should have updated bitfield in peer class
+                    //ODAVDE NIJE TESTIRANO
                     boolean[] bitfield = peerMessage.getPeer().bitfieldToBool(bitfieldPayload,numOfPieces);
 
                     for(int i = 0; i < peerMessage.getPeer().getBitfield().length; i++){
@@ -261,12 +251,14 @@ public class Manager extends Thread{
                     break;
 
                 case Message.pieceID:
+                    //testirano
                     Message.Piece piece = (Message.Piece) peerMessage.getMessage(); //if a peer sends you a Piece message, he is sending you a block inside of a piece, so you still don't know if you have whole piece or now
                     if(piece.start > 0) //this means that peer has a piece
                         peerMessage.getPeer().sendMessage(new Message.Have(piece.ind));
                     else
                         break;
                 case Message.requestID:
+                    //NIJE TESTIRANO
                     /*
                     Message.Request req = (Message.Request) peerMessage.getMessage();
                     try {
@@ -300,6 +292,8 @@ public class Manager extends Thread{
         }
 
     }
+
+
 
 
     public boolean isFileComplete(){
