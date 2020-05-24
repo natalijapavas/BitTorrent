@@ -19,7 +19,6 @@ public class Manager extends Thread{
     private ServerSocket socket;
     private Tracker track;
     private File outputFile;
-    private File outputDirectory; //Output directory to which intermediate pieces will be stored, and subsequently resulting file
     private LinkedBlockingDeque<PeerMessage> messages = null;
     private boolean isRunning = false;
     private boolean[] currBitfield;
