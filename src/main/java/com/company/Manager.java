@@ -11,41 +11,51 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class Manager extends Thread{
-
-    private ArrayList<Peer> peers;
-    private ArrayList<Piece> pieces;
+public class Manager extends Thread {
+    public ArrayList<Peer> currentPeerList; //za sinhronizovanje+ treba ubiti konekcije koje mi ne koriste
+    public ArrayList<Piece> pieces; //za sinhronizovanje
     private ServerSocket socket;
     private Tracker track;
     private File outputFile;
-    private LinkedBlockingDeque<PeerMessage> messages = null;
+    private LinkedBlockingDeque<PeerMessage> messages = null; //vrv nece trebati
     private boolean isRunning = false;
-    private boolean[] currBitfield;
-    private static boolean fullFile = false;
+    public boolean[] currBitfield; //za sinhronizovanje
+    private boolean fullFile = false;
     private Path directoryPath;
     private boolean isDownloading;
-    private int downloaded;
-    private int[] pieceRepeating;
+    private AtomicInteger downloaded; //za sinhronizovanje
+    private AtomicInteger uploaded; //za sinhronizovanje
+    public int[] pieceRepeating; //vrv isto za sinhronizovanje
 
-    public Manager(ArrayList<Peer> peers, Tracker track, File file){
-        this.peers = peers;
+
+    private ManagerInfo managerInfo;
+
+
+    public Manager(ArrayList<Peer> peers, Tracker track, File file) {
+        this.currentPeerList = peers;
         this.track = track;
-        this.outputFile =file;
-        this.downloaded=0;
+        this.outputFile = file;
+        this.downloaded = new AtomicInteger(0);
+        this.uploaded=new AtomicInteger(0);
 
         try {
-            this.directoryPath=Paths.get(System.getProperty("user.home"),this.track.getMetaInfoFile().getName());
-            if(!Files.exists(directoryPath)) { Files.createDirectory(directoryPath); }
+            this.directoryPath = Paths.get(System.getProperty("user.home"), this.track.getMetaInfoFile().getName());
+            if (!Files.exists(directoryPath)) {
+                Files.createDirectory(directoryPath);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
     public Manager(ArrayList<Peer> peers, Tracker track){
-        this.peers = peers;
+        this.currentPeerList = peers;
         this.track = track;
-        this.downloaded=0;
+        this.downloaded=new AtomicInteger(0);
+        this.uploaded=new AtomicInteger(0);
         try {
             this.directoryPath=Paths.get(System.getProperty("user.home"),this.track.getMetaInfoFile().getName());
             if(!Files.exists(this.directoryPath)) { Files.createDirectory(this.directoryPath); }
@@ -55,9 +65,11 @@ public class Manager extends Thread{
     }
 
     public Manager(ArrayList<Peer> peers, Tracker track,String directoryPath){
-        this.peers = peers;
+        this.currentPeerList = peers;
         this.track = track;
-        this.downloaded=0;
+        this.downloaded=new AtomicInteger(0);
+        this.uploaded=new AtomicInteger(0);
+
         try {
             this.directoryPath=Files.createDirectory(Paths.get(directoryPath,this.track.getMetaInfoFile().getName()));
             if(!Files.exists(this.directoryPath)) { Files.createDirectory(this.directoryPath); }
@@ -69,26 +81,11 @@ public class Manager extends Thread{
 
 
     public void writePiece(Piece piece) throws IOException {
-        /*RandomAccessFile f = new RandomAccessFile(this.outputFile,"rws");
-
-        f.seek(piece.getPieceLength() * piece.getPieceIndex());
-        f.write(data);
-        f.close();
-        */
-
         int max_num_of_digits=0;
         int index_num_of_digits=0;
         int index = piece.getPieceIndex();
         int maxIndex=this.track.getMetaInfoFile().getNumberOfPieces();
 
-        /*for(int i = 0; i < piece.getPieceIndex(); i++){
-            if(index > 10) {
-                index = index / 10;
-                num_of_digits++;
-            }
-            else
-                break;
-        } */
         while(maxIndex>0 || index>0)
         {
             maxIndex/=10;
@@ -100,10 +97,6 @@ public class Manager extends Thread{
 
         char zeros[]=new char[max_num_of_digits-index_num_of_digits];
         Arrays.fill(zeros,'0');
-        //StringBuilder zeros= new StringBuilder();
-        //for(int i = 0; i < this.track.getMetaInfoFile().getNumberOfPieces()- num_of_digits; i++){
-        //    zeros.insert(0, "0");
-        //}
         StringBuilder fileNameBuilder=new StringBuilder();
         fileNameBuilder.append(zeros);
         fileNameBuilder.append(piece.getPieceIndex());
@@ -111,18 +104,12 @@ public class Manager extends Thread{
 
         try{
             Path filePath=Paths.get(this.directoryPath.toString(),fileNameBuilder.toString());
-            //String path = this.pathToPieces + zeros.toString() + piece.getPieceIndex() + "piece";
             if(Files.exists(filePath) && Files.isRegularFile(filePath))
             {
                 System.out.println("File already exists");
                 return;
             }
-            /*File file = new File(filePath);
-            boolean result = file.createNewFile();
-            if (!result)
-                System.out.println("File already exists");
 
-            RandomAccessFile raf = new RandomAccessFile(path, "w"); */
             File outputPieceFile=new File(filePath.toString());
             FileOutputStream fileOutputStream=new FileOutputStream(outputPieceFile);
             piece.getDataBlocks().stream().map(DataBlock::getBlock).forEach(b -> {
@@ -132,22 +119,22 @@ public class Manager extends Thread{
                     e.printStackTrace();
                 }
             });
-            /*for (int i = 0; i < piece.getDataBlocks().size(); i++) {
-                byte[] data = piece.getDataBlocks().get(i).getBlock();
-                raf.write(data);
-            } */
+
             fileOutputStream.close();
-            //raf.close();
             System.out.println("saved piece" + piece.getPieceIndex());
-            downloaded += piece.getPieceLength();
+            //this.downloaded.addAndGet( piece.getPieceLength());
         }
         catch (InvalidPathException e) { e.printStackTrace(); }
         catch(IOException e) { e.printStackTrace(); }
     }
 
     public void run(){
+        new Thread(this.track).start();
         while(this.isRunning){
             try{
+
+                this.currentPeerList=this.track.getPeerList();
+                currentPeerList.stream().forEach(e->(new Thread(e)).start());
                 parse();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -169,7 +156,7 @@ public class Manager extends Thread{
         int minI = pieceRepeating.length;
         for(int i = 0; i < this.pieceRepeating.length;i++){
             //checking if we already have this piece
-            if(this.currBitfield[i] == false && peer.getBitfield()[i] == true){
+            if(this.currBitfield[i] == false && peer.getPeerInfo().getBitfield()[i] == true){
                 //if we don't have the piece, we check how common it is
                 //we want to find the rarest
                 if(min > this.pieceRepeating[i]){
@@ -185,10 +172,10 @@ public class Manager extends Thread{
 
     //counting how many peers have the piece that we need - for each piece
     public void pieceRepeating(){
-        for(Peer p: this.peers){
+        for(Peer p: this.currentPeerList){
             for(int i = 0; i < this.pieceRepeating.length; i++){
                 //we count instances of the pieces that we need
-                if(p.getBitfield()[i]){
+                if(p.getPeerInfo().getBitfield()[i]){
                     this.pieceRepeating[i]++;
                 }
             }
@@ -237,10 +224,10 @@ public class Manager extends Thread{
                     //ODAVDE NIJE TESTIRANO
                     boolean[] bitfield = peerMessage.getPeer().bitfieldToBool(bitfieldPayload,numOfPieces);
 
-                    for(int i = 0; i < peerMessage.getPeer().getBitfield().length; i++){
+                    for(int i = 0; i < peerMessage.getPeer().getPeerInfo().getBitfield().length; i++){
                         //we want a piece if we need it, someone has it, and we dont have it
                         //in this case we send a message INTERESTED
-                        if(peerMessage.getPeer().getBitfield()[i] == true && this.currBitfield[i] == false){
+                        if(peerMessage.getPeer().getPeerInfo().getBitfield()[i] == true && this.currBitfield[i] == false){
                             peerMessage.getPeer().sendMessage(Message.INTERESTED);
                             peerMessage.getPeer().getPeerInfo().setInterested(true);
                             break;
@@ -294,8 +281,6 @@ public class Manager extends Thread{
     }
 
 
-
-
     public boolean isFileComplete(){
         for (boolean b : this.currBitfield) {
             if (b == false)
@@ -321,7 +306,5 @@ public class Manager extends Thread{
         file.close();
         return data;
     }
-
-
 
 }

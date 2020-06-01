@@ -1,8 +1,5 @@
 package com.company;
-
-
 /**
-
 This class will (at least for now) serve to hold a data block of given piece which was sent by a Peer
  (or which we will send to a Peer which has requested it). Several data blocks will constitute a single Piece as
  described in the original specification.
@@ -10,12 +7,11 @@ This class will (at least for now) serve to hold a data block of given piece whi
  -block: byte[]
  -index: int //uniquely defines piece to which this block belongs to
  -start: int //uniquely defines byte offset within the piece of the block
-
  **/
 
 
-public class DataBlock {
-    private final int MAX_CAPACITY=1<<14; //2^14
+public class DataBlock implements Comparable{
+    public static final int MAX_CAPACITY=1<<14;
     private byte[] block;
     private int index;
     private int start;
@@ -68,10 +64,16 @@ public class DataBlock {
         return isDownloaded;
     }
 
+    public void setStart(int start) { this.start = start;}
+
     public void setRequested(boolean requested) {
         isRequested = requested;
     }
 
     public void setDownloaded(boolean isDownloaded) { this.isDownloaded=isDownloaded; }
 
+    @Override
+    public int compareTo(Object o) {
+        return Integer.compare(this.start,((DataBlock) o).getStart());
+    }
 }

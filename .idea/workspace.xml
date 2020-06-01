@@ -2,8 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d2c03741-b4a7-4aa9-b815-2b3bc216bbfb" name="Default Changelist" comment="bencode update 2">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/company/ManagerInfo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/DataBlock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/DataBlock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Manager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Manager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/MetaInfoFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/MetaInfoFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Peer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Peer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/PeerInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/PeerInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Piece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Piece.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/company/Tracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/company/Tracker.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,10 +131,10 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="476" y="131" width="1024" height="852" key="#Project_Structure/67.27.1853.1053@67.27.1853.1053" timestamp="1588333227269" />
-    <state x="712" y="257" width="553" height="606" key="#com.intellij.ide.util.MemberChooser" timestamp="1590090108411">
+    <state x="712" y="257" width="553" height="606" key="#com.intellij.ide.util.MemberChooser" timestamp="1590938174970">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="712" y="257" width="553" height="606" key="#com.intellij.ide.util.MemberChooser/67.27.1853.1053@67.27.1853.1053" timestamp="1590090108411" />
+    <state x="712" y="257" width="553" height="606" key="#com.intellij.ide.util.MemberChooser/67.27.1853.1053@67.27.1853.1053" timestamp="1590938174970" />
     <state x="699" y="223" width="579" height="668" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog" timestamp="1588075434623">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
@@ -199,10 +207,10 @@
       <screen x="0" y="27" width="1920" height="996" />
     </state>
     <state x="616" y="352" key="com.intellij.ide.util.TipDialog/0.27.1920.996@0.27.1920.996" timestamp="1586020481929" />
-    <state x="607" y="212" width="762" height="690" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1589835948896">
+    <state x="607" y="212" width="762" height="690" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1590336780546">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="607" y="212" width="762" height="690" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/67.27.1853.1053@67.27.1853.1053" timestamp="1589835948896" />
+    <state x="607" y="212" width="762" height="690" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/67.27.1853.1053@67.27.1853.1053" timestamp="1590336780546" />
     <state x="1028" y="449" width="448" height="177" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586384888457">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
@@ -216,9 +224,9 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="657" y="252" width="672" height="677" key="run.anything.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1588335326251" />
-    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup" timestamp="1590172119989">
+    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup" timestamp="1591005030866">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1590172119989" />
+    <state x="676" y="309" width="672" height="678" key="search.everywhere.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1591005030866" />
   </component>
 </project>

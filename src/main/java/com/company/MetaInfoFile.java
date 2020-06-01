@@ -5,7 +5,6 @@
  * -infoHash = Stores SHA1 hash of the VALUE of info key kept in .torrent file
  * -infoHashHex = Same as above, however it is stored as a HEX string (for visual and testing purposes)
  * Additionally:
-
  ****************************************************/
 
 package com.company;
@@ -26,7 +25,7 @@ public class MetaInfoFile {
     private char fileMode='n'; //s for single file, m for multiple, n for none
     private byte[] infoHash;
     private String infoHashHex;
-    private List<byte[]> pieceHashes;
+    private ArrayList<byte[]> pieceHashes;
 
 
     public MetaInfoFile(){}
@@ -101,6 +100,10 @@ public class MetaInfoFile {
         return infoMap.get("piece length").getInt();
     }
 
+    public int getLastPieceLength() throws BencodeFormatException{
+        return this.getFileLength()-(this.getNumberOfPieces()-1)*this.getPieceLength();
+    }
+
     public byte[] getPieces() throws BencodeFormatException
     {
         Map<String,BencodeValue>infoMap=this.getInfoMap();
@@ -111,6 +114,8 @@ public class MetaInfoFile {
     }
 
     public int getNumberOfPieces() throws BencodeFormatException { return this.getPieces().length/20; }
+
+
 
     public String getName() throws BencodeFormatException {
         Map<String,BencodeValue>infoMap=this.getInfoMap();
@@ -131,6 +136,7 @@ public class MetaInfoFile {
         return infoMap.get("length").getInt();
     }
 
+
     public BencodeValue getFiles() throws BencodeFormatException
     {
         if(this.fileMode!='m')
@@ -144,9 +150,13 @@ public class MetaInfoFile {
 
     public byte[] getPieceHash(int index)
     {
-        if(index<this.pieceHashes.size())
+        try {
             return this.pieceHashes.get(index);
-        return null;
+        }catch(ArrayIndexOutOfBoundsException e) {
+            System.out.println("Piece index ut of bounds");
+            return null;
+        }
+
     }
 
     private void parsePieceHashes(BencodeValue value) throws BencodeFormatException {

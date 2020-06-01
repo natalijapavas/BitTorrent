@@ -75,6 +75,7 @@ public class Main {
             System.out.println("Info hash is: "+document.getInfoHashHex());
 
             System.out.println("************************************Testing http tracker requests*************************************");
+//            ManagerInfo testManagerInfo=new ManagerInfo();
             Tracker tracker=new Tracker(document);
             BencodeValue bencodeHttpResponse=tracker.sendHTTPAnnounceRequest();
             Map<String,BencodeValue> bencodeMap=bencodeHttpResponse.getMap();
